@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nicolás Molina-Arroyave — Political Communication & Democracy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0E0E10;--surface:#16161A;--surface2:#1E1E24;--border:#2A2A32;
+    --text:#F2EFE7;--muted:#8A8898;--blue:#3B5BDB;--blue-dim:#2A4299;
+    --amber:#E8A325;--amber-dim:#C48A10;
+    --sans:'Inter',sans-serif;--serif:'Playfair Display',serif;--mono:'Space Mono',monospace;
+  }
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;overflow-x:hidden;}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;background:rgba(14,14,16,0.85);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color 0.3s;}
+  nav.scrolled{border-color:var(--border);}
+  .nav-logo{font-family:var(--mono);font-size:0.85rem;letter-spacing:0.08em;color:var(--amber);text-decoration:none;}
+  .nav-links{display:flex;gap:2rem;list-style:none;}
+  .nav-links a{font-size:0.82rem;font-weight:500;letter-spacing:0.05em;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color 0.2s;}
+  .nav-links a:hover{color:var(--text);}
+  .nav-right{display:flex;align-items:center;gap:1rem;}
+  .lang-switch{font-family:var(--mono);font-size:0.75rem;letter-spacing:0.08em;padding:0.4rem 0.9rem;border:1px solid var(--border);color:var(--muted);text-decoration:none;transition:all 0.2s;}
+  .lang-switch:hover{border-color:var(--amber);color:var(--amber);}
+  .nav-cta{font-family:var(--mono);font-size:0.78rem;padding:0.5rem 1.2rem;border:1px solid var(--blue);color:var(--blue);text-decoration:none;letter-spacing:0.05em;transition:all 0.2s;}
+  .nav-cta:hover{background:var(--blue);color:#fff;}
+
+  #hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:8rem 3rem 4rem;position:relative;overflow:hidden;}
+  .hero-bg-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:0.35;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 30%,transparent 100%);}
+  .hero-eyebrow{font-family:var(--mono);font-size:0.78rem;letter-spacing:0.15em;color:var(--amber);text-transform:uppercase;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.6s 0.2s forwards;}
+  .hero-name{font-family:var(--serif);font-size:clamp(3.5rem,8vw,7rem);font-weight:900;line-height:1;margin-bottom:1.2rem;opacity:0;animation:fadeUp 0.7s 0.4s forwards;}
+  .hero-name em{font-style:italic;color:var(--amber);}
+  .hero-typewriter{font-family:var(--serif);font-size:clamp(1.1rem,2.5vw,1.6rem);font-style:italic;color:var(--muted);min-height:2.2rem;margin-bottom:2.5rem;opacity:0;animation:fadeUp 0.6s 0.7s forwards;}
+  .hero-typewriter span{border-right:2px solid var(--amber);padding-right:2px;}
+  .hero-tags{display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:3rem;opacity:0;animation:fadeUp 0.6s 1s forwards;}
+  .tag{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.06em;padding:0.3rem 0.8rem;border:1px solid var(--border);color:var(--muted);text-transform:uppercase;}
+  .tag.blue{border-color:var(--blue);color:var(--blue);}
+  .tag.amber{border-color:var(--amber);color:var(--amber);}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp 0.6s 1.2s forwards;}
+  .btn-primary{font-family:var(--mono);font-size:0.82rem;letter-spacing:0.06em;padding:0.9rem 2rem;background:var(--blue);color:#fff;text-decoration:none;transition:background 0.2s;display:inline-block;}
+  .btn-primary:hover{background:var(--blue-dim);}
+  .btn-ghost{font-family:var(--mono);font-size:0.82rem;letter-spacing:0.06em;padding:0.9rem 2rem;border:1px solid var(--border);color:var(--text);text-decoration:none;transition:border-color 0.2s;display:inline-block;}
+  .btn-ghost:hover{border-color:var(--muted);}
+  .scroll-hint{position:absolute;bottom:2.5rem;left:3rem;display:flex;align-items:center;gap:0.8rem;font-family:var(--mono);font-size:0.7rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;opacity:0;animation:fadeUp 0.6s 1.5s forwards;}
+  .scroll-line{width:40px;height:1px;background:var(--muted);position:relative;overflow:hidden;}
+  .scroll-line::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--amber);animation:lineSlide 1.8s 2s infinite;}
+
+  section{padding:7rem 3rem;}
+  .section-label{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);margin-bottom:1rem;}
+  .section-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:700;line-height:1.15;margin-bottom:1.5rem;}
+  .section-title em{font-style:italic;color:var(--blue);}
+  .divider{width:48px;height:2px;background:var(--amber);margin-bottom:3rem;}
+
+  #sobre{background:var(--surface);}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;max-width:1100px;}
+  .about-bio{font-size:1.05rem;color:#ccc;line-height:1.8;}
+  .about-bio p+p{margin-top:1.2rem;}
+  .about-bio strong{color:var(--text);}
+  .about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+  .stat-card{background:var(--surface2);border:1px solid var(--border);padding:1.5rem;}
+  .stat-num{font-family:var(--serif);font-size:2.6rem;font-weight:900;color:var(--amber);line-height:1;}
+  .stat-label{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:0.4rem;}
+  .affil-list{margin-top:2rem;display:flex;flex-direction:column;gap:0.8rem;}
+  .affil{display:flex;align-items:center;gap:0.8rem;font-size:0.88rem;color:var(--muted);}
+  .affil-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0;}
+
+  #redes{background:var(--bg);}
+  .redes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;max-width:1100px;}
+  .red-card{background:var(--surface);border:1px solid var(--border);padding:2rem 1.8rem;text-decoration:none;color:inherit;transition:border-color 0.25s,transform 0.2s;display:block;}
+  .red-card:hover{border-color:var(--blue);transform:translateY(-3px);}
+  .red-icon{font-family:var(--mono);font-size:1.4rem;margin-bottom:0.8rem;color:var(--blue);}
+  .red-name{font-weight:600;font-size:1rem;margin-bottom:0.3rem;}
+  .red-handle{font-family:var(--mono);font-size:0.75rem;color:var(--muted);letter-spacing:0.04em;}
+  .red-desc{font-size:0.85rem;color:var(--muted);margin-top:0.8rem;line-height:1.5;}
+
+  #investigacion{background:var(--surface);}
+  .papers-list{display:flex;flex-direction:column;gap:0;max-width:1100px;border:1px solid var(--border);}
+  .paper-row{border-bottom:1px solid var(--border);padding:2rem 2.5rem;}
+  .paper-row:last-child{border-bottom:none;}
+  .paper-year-badge{font-family:var(--mono);font-size:0.7rem;color:var(--amber);letter-spacing:0.1em;margin-bottom:0.4rem;}
+  .paper-row-title{font-family:var(--serif);font-size:1.25rem;font-weight:700;line-height:1.3;margin-bottom:0.4rem;}
+  .paper-row-journal{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.04em;}
+  .paper-row-coauthors{font-size:0.82rem;color:var(--muted);margin-top:0.3rem;}
+  .paper-row-excerpt{font-size:0.9rem;color:#aaa;line-height:1.7;margin-bottom:1.5rem;max-width:700px;}
+  .paper-actions{display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;}
+  .btn-caja{font-family:var(--mono);font-size:0.75rem;letter-spacing:0.06em;padding:0.6rem 1.2rem;background:var(--amber);color:#0E0E10;text-decoration:none;cursor:pointer;border:none;transition:background 0.2s;display:inline-flex;align-items:center;gap:0.4rem;}
+  .btn-caja:hover{background:var(--amber-dim);}
+  .btn-paper{font-family:var(--mono);font-size:0.75rem;letter-spacing:0.06em;padding:0.6rem 1.2rem;border:1px solid var(--blue);color:var(--blue);text-decoration:none;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem;}
+  .btn-paper:hover{background:var(--blue);color:#fff;}
+  .btn-material{font-family:var(--mono);font-size:0.75rem;letter-spacing:0.06em;padding:0.6rem 1.2rem;border:1px solid var(--border);color:var(--muted);text-decoration:none;transition:border-color 0.2s;display:inline-flex;align-items:center;gap:0.4rem;}
+  .btn-material:hover{border-color:var(--muted);color:var(--text);}
+  .btn-pronto{font-family:var(--mono);font-size:0.75rem;letter-spacing:0.06em;padding:0.6rem 1.2rem;border:1px solid var(--border);color:var(--border);cursor:default;display:inline-flex;align-items:center;gap:0.4rem;}
+  .paper-status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;}
+  .dot-live{background:#22c55e;}
+  .dot-pending{background:var(--border);}
+
+  #blog{background:var(--bg);}
+  .blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:1.5rem;max-width:1100px;}
+  .blog-card{background:var(--surface);border:1px solid var(--border);padding:2rem;text-decoration:none;color:inherit;transition:border-color 0.2s;display:block;}
+  .blog-card:hover{border-color:var(--blue);}
+  .blog-type{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber);margin-bottom:0.8rem;}
+  .blog-card-title{font-family:var(--serif);font-size:1.2rem;font-weight:700;line-height:1.3;margin-bottom:0.8rem;}
+  .blog-excerpt{font-size:0.87rem;color:var(--muted);line-height:1.6;margin-bottom:1.2rem;}
+  .blog-date{font-family:var(--mono);font-size:0.7rem;color:var(--border);letter-spacing:0.08em;}
+  .newsletter-cta{margin-top:3rem;background:var(--surface);border:1px solid var(--blue);padding:2.5rem 3rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;max-width:1100px;}
+  .newsletter-cta p{font-family:var(--serif);font-size:1.4rem;font-weight:700;font-style:italic;}
+  .newsletter-form{display:flex;gap:0.5rem;}
+  .newsletter-input{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0.75rem 1.2rem;font-family:var(--sans);font-size:0.88rem;width:280px;outline:none;transition:border-color 0.2s;}
+  .newsletter-input:focus{border-color:var(--blue);}
+  .newsletter-input::placeholder{color:var(--muted);}
+
+  #medios{background:var(--surface);}
+  .medios-list{max-width:1100px;}
+  .medio-item{display:grid;grid-template-columns:120px 1fr auto;gap:2rem;align-items:center;padding:1.8rem 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;transition:background 0.2s;}
+  .medio-item:hover{background:rgba(59,91,219,0.04);}
+  .medio-date-block{font-family:var(--mono);font-size:0.78rem;color:var(--muted);letter-spacing:0.08em;text-align:center;line-height:1.5;}
+  .medio-date-block strong{display:block;font-size:2rem;color:var(--amber);font-family:var(--serif);font-style:italic;line-height:1;}
+  .medio-outlet{font-family:var(--mono);font-size:0.72rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem;}
+  .medio-title-text{font-size:1rem;font-weight:600;margin-bottom:0.3rem;}
+  .medio-format{font-size:0.82rem;color:var(--muted);}
+  .medio-arrow{font-family:var(--mono);color:var(--muted);font-size:1.2rem;flex-shrink:0;}
+
+  #contacto{background:var(--bg);text-align:center;}
+  .contact-inner{max-width:700px;margin:0 auto;}
+  .contact-title{font-family:var(--serif);font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;}
+  .contact-title em{font-style:italic;color:var(--amber);}
+  .contact-sub{font-size:1rem;color:var(--muted);margin-bottom:3rem;line-height:1.7;}
+  .contact-links{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;}
+
+  footer{background:var(--surface);border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+  .footer-brand{font-family:var(--mono);font-size:0.8rem;color:var(--muted);}
+  .footer-brand strong{color:var(--amber);}
+  .footer-right{font-family:var(--mono);font-size:0.72rem;color:var(--border);letter-spacing:0.08em;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes lineSlide{0%{left:-100%;}50%{left:0;}100%{left:100%;}}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+
+  @media(max-width:768px){
+    nav{padding:1rem 1.5rem;}.nav-links{display:none;}
+    section{padding:5rem 1.5rem;}#hero{padding:7rem 1.5rem 3rem;}
+    .about-grid{grid-template-columns:1fr;}
+    .medio-item{grid-template-columns:80px 1fr;}.medio-arrow{display:none;}
+    .newsletter-cta{flex-direction:column;}.newsletter-input{width:100%;}
+    footer{flex-direction:column;text-align:center;}
+  }
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#hero" class="nav-logo">NMA // 2026</a>
+  <ul class="nav-links">
+    <li><a href="#sobre">About</a></li>
+    <li><a href="#redes">Networks</a></li>
+    <li><a href="#investigacion">Research</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#medios">Media</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="index.html" class="lang-switch">ES</a>
+    <a href="#contacto" class="nav-cta">Contact</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-eyebrow">Political Communication · Democracy · Science Communication</div>
+  <h1 class="hero-name"><em>Nicolás</em><br>Molina-Arroyave</h1>
+  <div class="hero-typewriter"><span id="typewriter-text"></span></div>
+  <div class="hero-tags">
+    <span class="tag blue">Researcher</span>
+    <span class="tag blue">Lecturer</span>
+    <span class="tag">EAFIT · UPB · UNAL</span>
+    <span class="tag amber">ICS-ULisboa</span>
+    <span class="tag">Medellín → Lisbon</span>
+  </div>
+  <div class="hero-actions">
+    <a href="#investigacion" class="btn-primary">View research →</a>
+    <a href="#blog" class="btn-ghost">Read the blog</a>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div>Explore</div>
+</section>
+
+<section id="sobre">
+  <div class="section-label">01 — Profile</div>
+  <h2 class="section-title">Lecturer, analyst<br>and <em>researcher</em></h2>
+  <div class="divider"></div>
+  <div class="about-grid reveal">
+    <div class="about-bio">
+      <p>I am a political scientist specialising in <strong>political communication, populist discourse, and democratic erosion</strong> in Latin America. My work sits at the intersection of academic rigour and accessible language — I believe political science cannot stay locked inside journals.</p>
+      <p>I teach at <strong>EAFIT, UPB, and UNAL Medellín</strong> across electoral systems, political marketing, and empirical methods. I collaborate with the <strong>CPOP</strong> research group (Political Communication and Public Opinion) at EAFIT and lead projects analysing the Colombian electoral cycle.</p>
+      <p>In 2026 I begin a PhD in Comparative Politics at the <strong>Institute of Social Sciences, Universidade de Lisboa</strong>, supervised by Carlos Meléndez and Susana Salgado, focusing on populist discourse and democratic backsliding.</p>
+      <div class="affil-list">
+        <div class="affil"><div class="affil-dot"></div>EAFIT — School of Arts and Humanities</div>
+        <div class="affil"><div class="affil-dot"></div>CPOP — Political Communication & Public Opinion</div>
+        <div class="affil"><div class="affil-dot"></div>ICS-ULisboa — PhD in Comparative Politics</div>
+        <div class="affil"><div class="affil-dot"></div>Atlas Electoral Colombia (independent project)</div>
+      </div>
+    </div>
+    <div>
+      <div class="about-stats">
+        <div class="stat-card"><div class="stat-num">3+</div><div class="stat-label">Universities where I teach</div></div>
+        <div class="stat-card"><div class="stat-num">400+</div><div class="stat-label">Discourse segments coded</div></div>
+        <div class="stat-card"><div class="stat-num">2026</div><div class="stat-label">Electoral cycle analysed</div></div>
+        <div class="stat-card"><div class="stat-num">ES·EN·FR·PT</div><div class="stat-label">Working languages</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="redes">
+  <div class="section-label">02 — Academic & Professional Networks</div>
+  <h2 class="section-title">Find me where<br>I <em>produce</em></h2>
+  <div class="divider"></div>
+  <div class="redes-grid reveal">
+    <a href="#" target="_blank" class="red-card"><div class="red-icon">GS</div><div class="red-name">Google Scholar</div><div class="red-handle">Nicolás Molina-Arroyave</div><div class="red-desc">Full publication record, citations, and h-index.</div></a>
+    <a href="#" target="_blank" class="red-card"><div class="red-icon">ID</div><div class="red-name">ORCID</div><div class="red-handle">orcid.org/0000-0001-7550-1940</div><div class="red-desc">Unique researcher identifier linking all affiliations and outputs.</div></a>
+    <a href="#" target="_blank" class="red-card"><div class="red-icon">RG</div><div class="red-name">ResearchGate</div><div class="red-handle">Nicolás Molina-Arroyave</div><div class="red-desc">Preprints and collaboration with the research community.</div></a>
+    <a href="#" target="_blank" class="red-card"><div class="red-icon">AC</div><div class="red-name">Academia.edu</div><div class="red-handle">nmolina-arroyave</div><div class="red-desc">Open-access papers and outreach beyond specialist audiences.</div></a>
+    <a href="#" target="_blank" class="red-card"><div class="red-icon">in</div><div class="red-name">LinkedIn</div><div class="red-handle">nmolina-arroyave</div><div class="red-desc">Professional network: courses, keynotes, and campaign advisory.</div></a>
+    <a href="#" target="_blank" class="red-card"><div class="red-icon">𝕏</div><div class="red-name">X / Twitter</div><div class="red-handle">@nicomolina_</div><div class="red-desc">Real-time electoral analysis and Colombian political commentary.</div></a>
+  </div>
+</section>
+
+<section id="investigacion">
+  <div class="section-label">03 — Research</div>
+  <h2 class="section-title">What I <em>write</em><br>and why it matters</h2>
+  <div class="divider"></div>
+  <div class="papers-list reveal">
+
+    <div class="paper-row">
+      <div class="paper-year-badge">2026 · Published article</div>
+      <div class="paper-row-title">Crowdsourcing platforms for citizenship and democracy in Latin America</div>
+      <div class="paper-row-journal">Cuadernos.info — No. 64</div>
+      <div class="paper-row-coauthors">With Villa Montoya, Restrepo Echavarría & Sepúlveda Cano</div>
+      <div class="paper-row-excerpt" style="margin-top:0.8rem;">Qualitative comparative analysis of 12 crowd-civic systems across 7 Latin American countries (2023–2025). Findings show these platforms operate as flexible participatory infrastructures mediating between citizens, civil society organisations, and public institutions — not as reproductions of normative democratic models.</div>
+      <div class="paper-actions">
+        <a href="paper-crowdsourcing.html" class="btn-caja">📦 Open the box</a>
+        <a href="https://doi.org/10.7764/cdi.64" target="_blank" class="btn-paper">
+          <span class="paper-status-dot dot-live"></span>Read the paper
+        </a>
+        <span class="btn-pronto"><span class="paper-status-dot dot-pending"></span>Supplementary · Coming soon</span>
+      </div>
+    </div>
+
+    <div class="paper-row">
+      <div class="paper-year-badge">2026 · Under review</div>
+      <div class="paper-row-title">Petro and May Day: Populist discourse 2023–2026</div>
+      <div class="paper-row-journal">América Latina Hoy</div>
+      <div class="paper-row-coauthors">With Freddy Santamaría-Velasco</div>
+      <div class="paper-row-excerpt" style="margin-top:0.8rem;">Quantitative content analysis and LDA topic modelling of four years of presidential speeches delivered on May 1st. Maps the evolution of Petro's populist framing, the construction of "the people," and discursive strategies of institutional confrontation.</div>
+      <div class="paper-actions">
+        <a href="paper-petro.html" class="btn-caja">📦 Open the box</a>
+        <span class="btn-pronto"><span class="paper-status-dot dot-pending"></span>Paper · Coming soon</span>
+        <span class="btn-pronto"><span class="paper-status-dot dot-pending"></span>Data · Coming soon</span>
+      </div>
+    </div>
+
+    <div class="paper-row">
+      <div class="paper-year-badge">2026 · Doctoral proposal</div>
+      <div class="paper-row-title">Words that divide, citizenships that resist</div>
+      <div class="paper-row-journal">ICS-ULisboa · Sup. Carlos Meléndez & Susana Salgado</div>
+      <div class="paper-row-excerpt" style="margin-top:0.8rem;">Doctoral research examining how populist discourse erodes democratic quality in Latin America. Combines computational text analysis, V-Dem data, and comparative case studies in Colombia, Venezuela, and Brazil.</div>
+      <div class="paper-actions">
+        <a href="paper-doctoral.html" class="btn-caja">📦 Open the box</a>
+        <span class="btn-pronto"><span class="paper-status-dot dot-pending"></span>Paper · Coming soon</span>
+        <span class="btn-pronto"><span class="paper-status-dot dot-pending"></span>Data · Coming soon</span>
+      </div>
+    </div>
+
+    <div class="paper-row">
+      <div class="paper-year-badge">2026 · Ongoing project</div>
+      <div class="paper-row-title">Atlas Electoral Colombia 2026</div>
+      <div class="paper-row-journal">Civic-science tool · Python + Leaflet.js</div>
+      <div class="paper-row-excerpt" style="margin-top:0.8rem;">Georeferenced visualisation platform for Colombian electoral results. Scraped data from the Registraduría Nacional connected to an interactive map allowing exploration by municipality, party, and candidate for the 2026 electoral cycle.</div>
+      <div class="paper-actions">
+        <a href="paper-atlas.html" class="btn-caja">📦 Open the box</a>
+        <span class="btn-pronto"><span class="paper-status-dot dot-pending"></span>Paper · Coming soon</span>
+        <a href="#contacto" class="btn-material">↗ Request beta access</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="blog">
+  <div class="section-label">04 — Blog & Newsletter</div>
+  <h2 class="section-title">Ideas that <em>travel</em><br>beyond the journal</h2>
+  <div class="divider"></div>
+  <div class="blog-grid reveal">
+    <a href="#" class="blog-card"><div class="blog-type">Newsletter · Analysis</div><div class="blog-card-title">The populism meter: tracking Petro's discourse week by week</div><div class="blog-excerpt">The instrument we use at CPOP to monitor populist intensity in presidential interventions. Methodology, limitations, and early findings.</div><div class="blog-date">JUN 2026</div></a>
+    <a href="#" class="blog-card"><div class="blog-type">Reflection · Pedagogy</div><div class="blog-card-title">Why I teach politics like a board game</div><div class="blog-excerpt">On WizardNet, the Colombian Risk, and electoral simulators: when gamification is an epistemological bet, not a motivation trick.</div><div class="blog-date">MAY 2026</div></a>
+    <a href="#" class="blog-card"><div class="blog-type">Research · Outreach</div><div class="blog-card-title">What do presidential candidates promise — and what does LDA reveal?</div><div class="blog-excerpt">We applied topic modelling to four government programmes from 2026. Here is what we found about convergences, differences, and hollow rhetoric.</div><div class="blog-date">APR 2026</div></a>
+    <a href="#" class="blog-card"><div class="blog-type">Project · Digital democracy</div><div class="blog-card-title">Electoral Atlas: behind the scenes of a civic-science project</div><div class="blog-excerpt">How we reverse-engineered the Registraduría API, connected data to Leaflet.js, and decided to go open-source from day one.</div><div class="blog-date">MAR 2026</div></a>
+    <a href="#" class="blog-card"><div class="blog-type">Opinion · Academia</div><div class="blog-card-title">Lisbon as a wager: why a PhD in comparative politics from Colombia</div><div class="blog-excerpt">A personal note on building an academic profile from the Global South and what it means to orient toward Europe without turning your back on Latin America.</div><div class="blog-date">FEB 2026</div></a>
+    <a href="#" class="blog-card"><div class="blog-type">Method · Tools</div><div class="blog-card-title">Orange Data Mining for political scientists: a practical no-code guide</div><div class="blog-excerpt">Everything I wish someone had explained about LDA, discretisation, and text visualisation when I first started working with electoral data.</div><div class="blog-date">JAN 2026</div></a>
+  </div>
+  <div class="newsletter-cta reveal">
+    <p>"Politics is too important to leave only in the journals."</p>
+    <div class="newsletter-form">
+      <input type="email" class="newsletter-input" placeholder="your@email.com">
+      <a href="#" class="btn-primary">Subscribe</a>
+    </div>
+  </div>
+</section>
+
+<section id="medios">
+  <div class="section-label">05 — Media appearances</div>
+  <h2 class="section-title">When <em>academia</em><br>goes on air</h2>
+  <div class="divider"></div>
+  <div class="medios-list reveal">
+    <a href="#" class="medio-item"><div class="medio-date-block"><strong>JUN</strong>2026</div><div class="medio-info"><div class="medio-outlet">El Colombiano</div><div class="medio-title-text">First-round analysis: vote fragmentation and second-round scenarios</div><div class="medio-format">Analysis column — Print & digital</div></div><div class="medio-arrow">↗</div></a>
+    <a href="#" class="medio-item"><div class="medio-date-block"><strong>MAY</strong>2026</div><div class="medio-info"><div class="medio-outlet">Caracol Radio</div><div class="medio-title-text">How populist is Petro's discourse? Interview on the populism meter</div><div class="medio-format">Live interview — Buen Día Colombia</div></div><div class="medio-arrow">↗</div></a>
+    <a href="#" class="medio-item"><div class="medio-date-block"><strong>APR</strong>2026</div><div class="medio-info"><div class="medio-outlet">La Silla Vacía</div><div class="medio-title-text">The topics dominating presidential proposals, according to LDA</div><div class="medio-format">Data journalism piece</div></div><div class="medio-arrow">↗</div></a>
+    <a href="#" class="medio-item"><div class="medio-date-block"><strong>MAR</strong>2026</div><div class="medio-info"><div class="medio-outlet">RCN Televisión</div><div class="medio-title-text">Electoral systems and representation: explaining Congress to non-political scientists</div><div class="medio-format">Studio interview — Noticias RCN</div></div><div class="medio-arrow">↗</div></a>
+  </div>
+</section>
+
+<section id="contacto">
+  <div class="contact-inner reveal">
+    <div class="section-label" style="display:inline-block;">06 — Contact</div>
+    <h2 class="contact-title">Shall we talk<br>about <em>politics</em>?</h2>
+    <p class="contact-sub">Available for keynotes, corporate training, campaign advisory, and research collaborations. I work in Spanish, English, French, and (soon) Portuguese.</p>
+    <div class="contact-links">
+      <a href="mailto:nmolina@eafit.edu.co" class="btn-primary">Send an email →</a>
+      <a href="#" target="_blank" class="btn-ghost">LinkedIn</a>
+      <a href="#" target="_blank" class="btn-ghost">X / Twitter</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand"><strong>Nicolás Molina-Arroyave</strong> — Political communication & democracy<br>Medellín, Colombia → Lisbon, Portugal</div>
+  <div class="footer-right">© 2026 · BUILT WITH RIGOUR AND CLARITY</div>
+</footer>
+
+<script>
+  const phrases=["to understand politics.","where science speaks plainly.","between data and democracy.","communicating what power does."];
+  let pi=0,ci=0,deleting=false;
+  const tw=document.getElementById('typewriter-text');
+  function type(){const phrase=phrases[pi];if(!deleting){tw.textContent=phrase.slice(0,ci+1);ci++;if(ci===phrase.length){deleting=true;setTimeout(type,2000);return;}}else{tw.textContent=phrase.slice(0,ci-1);ci--;if(ci===0){deleting=false;pi=(pi+1)%phrases.length;}}setTimeout(type,deleting?45:75);}
+  setTimeout(type,1800);
+  const navEl=document.getElementById('nav');
+  window.addEventListener('scroll',()=>{navEl.classList.toggle('scrolled',window.scrollY>50);});
+  const reveals=document.querySelectorAll('.reveal');
+  const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+  reveals.forEach(r=>observer.observe(r));
+</script>
+</body>
+</html>
