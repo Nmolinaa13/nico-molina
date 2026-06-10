@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abrir la caja — Crowdsourcing y democracia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0E0E10;--surface:#16161A;--s2:#1E1E24;--border:#2A2A32;
+  --text:#F2EFE7;--muted:#8A8898;--blue:#3B5BDB;--amber:#E8A325;
+  --sans:'Inter',sans-serif;--serif:'Playfair Display',serif;--mono:'Space Mono',monospace;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden;}
+
+/* PROGRESS */
+#progress{position:fixed;top:0;left:0;height:3px;background:var(--amber);z-index:300;width:0;transition:width 0.1s linear;}
+
+/* NAV */
+.snav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.9rem 2.5rem;
+  background:rgba(14,14,16,0.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.back{font-family:var(--mono);font-size:0.73rem;letter-spacing:0.07em;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:0.5rem;transition:color 0.2s;}
+.back:hover{color:var(--text);}
+.snav-tag{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber);}
+
+/* COVER — full viewport cinematic */
+.cover{
+  height:100vh;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:7rem 8vw 5rem;position:relative;overflow:hidden;
+}
+.cover-noise{position:absolute;inset:0;background:linear-gradient(160deg,#0a0a14 0%,#0E0E10 50%,#0d0d18 100%);}
+.cover-lines{
+  position:absolute;inset:0;
+  background-image:linear-gradient(transparent 49px,rgba(255,255,255,0.03) 50px),
+                   linear-gradient(90deg,transparent 49px,rgba(255,255,255,0.03) 50px);
+  background-size:50px 50px;
+}
+.cover-bigtext{
+  position:absolute;right:-4vw;bottom:-4vh;
+  font-family:var(--serif);font-size:38vw;font-weight:900;line-height:0.85;
+  color:rgba(59,91,219,0.045);pointer-events:none;user-select:none;
+  letter-spacing:-0.04em;
+}
+.cover-content{position:relative;z-index:1;}
+.cover-eyebrow{
+  font-family:var(--mono);font-size:0.72rem;letter-spacing:0.18em;
+  color:var(--amber);text-transform:uppercase;margin-bottom:1.8rem;
+  display:flex;align-items:center;gap:1rem;
+  opacity:0;animation:fadeUp 0.8s 0.3s forwards;
+}
+.cover-eyebrow::before{content:'';width:36px;height:1px;background:var(--amber);}
+.cover-h1{
+  font-family:var(--serif);font-size:clamp(2.8rem,6vw,5.5rem);
+  font-weight:900;line-height:1.02;margin-bottom:2rem;
+  opacity:0;animation:fadeUp 0.9s 0.5s forwards;
+}
+.cover-h1 em{font-style:italic;color:var(--amber);}
+.cover-pills{
+  display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:2.5rem;
+  opacity:0;animation:fadeUp 0.8s 0.8s forwards;
+}
+.pill{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.06em;padding:0.3rem 0.9rem;border:1px solid var(--border);color:var(--muted);text-transform:uppercase;}
+.pill.hi{border-color:var(--blue);color:var(--blue);}
+.cover-down{
+  font-family:var(--mono);font-size:0.7rem;letter-spacing:0.1em;color:var(--muted);
+  display:flex;align-items:center;gap:0.6rem;
+  opacity:0;animation:fadeUp 0.7s 1.1s forwards;
+}
+
+/* ── SCROLLY LAYOUT ── */
+.scrolly-chapter{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:100vh;
+  position:relative;
+}
+
+/* LEFT: sticky panel */
+.sticky-panel{
+  position:sticky;top:0;height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:3rem;overflow:hidden;
+}
+.sticky-inner{width:100%;height:100%;position:relative;}
+
+/* Each "slide" inside the sticky panel */
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:3rem;
+  opacity:0;transform:translateY(24px);
+  transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  pointer-events:none;
+}
+.slide.active{opacity:1;transform:translateY(0);pointer-events:auto;}
+
+/* Slide content types */
+.slide-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber);margin-bottom:1.2rem;}
+.slide-quote{
+  font-family:var(--serif);font-size:clamp(1.5rem,2.5vw,2.4rem);
+  font-weight:700;font-style:italic;line-height:1.25;
+  border-left:3px solid var(--amber);padding-left:1.5rem;
+  color:var(--text);
+}
+.slide-quote em{color:var(--amber);font-style:normal;}
+.slide-cite{font-family:var(--mono);font-size:0.7rem;color:var(--muted);margin-top:1.2rem;letter-spacing:0.06em;}
+
+/* Big stat display */
+.slide-stat{text-align:center;padding:2rem;}
+.slide-stat-num{font-family:var(--serif);font-size:clamp(5rem,10vw,9rem);font-weight:900;line-height:0.9;color:var(--amber);}
+.slide-stat-unit{font-family:var(--mono);font-size:0.8rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);margin-top:0.5rem;}
+.slide-stat-desc{font-size:0.9rem;color:var(--muted);margin-top:0.8rem;line-height:1.6;max-width:320px;margin-left:auto;margin-right:auto;}
+
+/* Keyword cluster */
+.slide-cluster{display:flex;flex-wrap:wrap;gap:0.8rem;align-content:center;justify-content:center;}
+.cluster-word{
+  font-family:var(--serif);font-weight:700;font-style:italic;
+  color:var(--text);transition:all 0.4s ease;
+  cursor:default;
+}
+.cluster-word.w1{font-size:2.8rem;color:var(--amber);}
+.cluster-word.w2{font-size:2rem;color:var(--text);}
+.cluster-word.w3{font-size:1.4rem;color:var(--muted);}
+.cluster-word.w4{font-size:1rem;color:var(--border);}
+
+/* Finding card inside panel */
+.slide-finding{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--blue);padding:2rem 2rem 2rem 1.8rem;}
+.finding-n{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--blue);margin-bottom:0.8rem;}
+.finding-title{font-family:var(--serif);font-size:1.4rem;font-weight:700;line-height:1.25;margin-bottom:0.8rem;}
+.finding-body{font-size:0.88rem;color:var(--muted);line-height:1.7;}
+
+/* Animated bar inside panel */
+.slide-bars{width:100%;}
+.sbar-row{display:grid;grid-template-columns:120px 1fr 44px;align-items:center;gap:0.8rem;margin-bottom:1rem;}
+.sbar-label{font-family:var(--mono);font-size:0.68rem;color:var(--muted);text-align:right;letter-spacing:0.03em;line-height:1.3;}
+.sbar-track{background:var(--s2);height:6px;overflow:hidden;}
+.sbar-fill{height:100%;width:0;background:var(--blue);transition:width 1.2s cubic-bezier(0.16,1,0.3,1);}
+.sbar-fill.am{background:var(--amber);}
+.sbar-fill.dim{background:var(--border);}
+.sbar-val{font-family:var(--mono);font-size:0.72rem;color:var(--text);}
+.sbar-title{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--amber);margin-bottom:1.2rem;}
+
+/* Tension meter */
+.tension-wrap{width:100%;text-align:center;}
+.tension-label{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;}
+.arc-svg{overflow:visible;}
+.arc-text{font-family:var(--serif);font-size:1.1rem;font-weight:700;fill:var(--amber);}
+
+/* RIGHT: scroll steps */
+.steps-col{padding:15vh 4rem 15vh 3rem;}
+.step{
+  min-height:70vh;display:flex;flex-direction:column;justify-content:center;
+  padding:2rem 0;opacity:0.3;
+  transition:opacity 0.4s;
+}
+.step.active{opacity:1;}
+.step-num{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.18em;color:var(--amber);text-transform:uppercase;margin-bottom:1rem;}
+.step-head{font-family:var(--serif);font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;line-height:1.2;margin-bottom:1.2rem;}
+.step-head em{font-style:italic;color:var(--blue);}
+.step-body{font-size:0.97rem;color:#bbb;line-height:1.85;max-width:520px;}
+.step-body+.step-body{margin-top:1rem;}
+.step-body strong{color:var(--text);}
+.step-callout{
+  margin-top:1.5rem;background:var(--s2);border-left:3px solid var(--amber);
+  padding:1.2rem 1.5rem;max-width:480px;
+}
+.step-callout p{font-size:0.88rem;color:var(--muted);line-height:1.6;}
+
+/* ── FULLWIDTH SECTIONS ── */
+.full-section{padding:8rem 8vw;background:var(--surface);}
+.full-section.dark{background:var(--bg);}
+.fs-label{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);margin-bottom:1rem;}
+.fs-title{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3rem);font-weight:700;line-height:1.15;margin-bottom:1.5rem;}
+.fs-title em{font-style:italic;color:var(--blue);}
+.fs-divider{width:40px;height:2px;background:var(--amber);margin-bottom:3rem;}
+
+/* Findings grid (full width section) */
+.findings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2rem;}
+.fc{background:var(--s2);border:1px solid var(--border);padding:2rem;position:relative;overflow:hidden;}
+.fc::before{content:attr(data-n);position:absolute;right:-0.5rem;top:-1rem;font-family:var(--serif);font-size:6rem;font-weight:900;color:rgba(59,91,219,0.07);pointer-events:none;}
+.fc-n{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--blue);margin-bottom:0.6rem;}
+.fc-title{font-family:var(--serif);font-size:1.1rem;font-weight:700;line-height:1.25;margin-bottom:0.6rem;}
+.fc-text{font-size:0.87rem;color:var(--muted);line-height:1.6;}
+
+/* Implication cards */
+.impl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem;}
+.impl-card{border:1px solid var(--border);padding:2rem;}
+.impl-word{font-family:var(--serif);font-size:2.2rem;font-weight:900;font-style:italic;margin-bottom:0.8rem;}
+.impl-word.b{color:var(--blue);}
+.impl-word.a{color:var(--amber);}
+.impl-word.m{color:var(--muted);}
+.impl-text{font-size:0.87rem;color:var(--muted);line-height:1.6;}
+
+/* CTA */
+.story-end{
+  min-height:60vh;display:flex;align-items:center;justify-content:center;
+  padding:6rem 3rem;text-align:center;background:var(--surface);
+}
+.end-inner{max-width:680px;}
+.end-h{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:900;line-height:1.1;margin-bottom:1.2rem;}
+.end-h em{font-style:italic;color:var(--amber);}
+.end-p{font-size:0.95rem;color:var(--muted);line-height:1.7;margin-bottom:2.5rem;}
+.end-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn-p{font-family:var(--mono);font-size:0.8rem;letter-spacing:0.06em;padding:0.85rem 2rem;background:var(--blue);color:#fff;text-decoration:none;transition:background 0.2s;display:inline-block;}
+.btn-p:hover{background:#2A4299;}
+.btn-g{font-family:var(--mono);font-size:0.8rem;letter-spacing:0.06em;padding:0.85rem 2rem;border:1px solid var(--border);color:var(--text);text-decoration:none;transition:border-color 0.2s;display:inline-block;}
+.btn-g:hover{border-color:var(--muted);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:900px){
+  .scrolly-chapter{grid-template-columns:1fr;}
+  .sticky-panel{display:none;}
+  .steps-col{padding:4rem 1.5rem;}
+  .step{opacity:1;min-height:auto;margin-bottom:4rem;}
+  .impl-grid{grid-template-columns:1fr;}
+  .full-section{padding:5rem 1.5rem;}
+  .cover{padding:6rem 1.5rem 4rem;}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav class="snav">
+  <a href="index.html" class="back">← Volver</a>
+  <span class="snav-tag">📦 Abrir la caja</span>
+</nav>
+
+<!-- COVER -->
+<section class="cover">
+  <div class="cover-noise"></div>
+  <div class="cover-lines"></div>
+  <div class="cover-bigtext">?</div>
+  <div class="cover-content">
+    <div class="cover-eyebrow">Cuadernos.info · No. 64 · 2026</div>
+    <h1 class="cover-h1">¿Puede internet<br><em>salvar</em> la<br>democracia?</h1>
+    <div class="cover-pills">
+      <span class="pill hi">Crowdsourcing</span>
+      <span class="pill hi">Democracia digital</span>
+      <span class="pill">Colombia · Brasil · Chile</span>
+      <span class="pill">8 min de lectura</span>
+    </div>
+    <div class="cover-down">↓ &nbsp; Bajar para leer la historia</div>
+  </div>
+</section>
+
+<!-- ══ SCROLLY CHAPTER 1: LA PREGUNTA ══ -->
+<div class="scrolly-chapter" id="ch1">
+
+  <div class="sticky-panel">
+    <div class="sticky-inner">
+
+      <!-- slide 0: cluster de palabras -->
+      <div class="slide active" id="s1-0">
+        <div class="slide-label">El problema</div>
+        <div class="slide-cluster">
+          <span class="cluster-word w1">Democracia</span>
+          <span class="cluster-word w3">digital</span>
+          <span class="cluster-word w2">participación</span>
+          <span class="cluster-word w4">promesa</span>
+          <span class="cluster-word w3">ciudadanía</span>
+          <span class="cluster-word w4">poder</span>
+          <span class="cluster-word w2">crowdsourcing</span>
+          <span class="cluster-word w4">exclusión</span>
+        </div>
+      </div>
+
+      <!-- slide 1: stat grande -->
+      <div class="slide" id="s1-1">
+        <div class="slide-stat">
+          <div class="slide-stat-num">47</div>
+          <div class="slide-stat-unit">plataformas analizadas</div>
+          <div class="slide-stat-desc">En Colombia, Brasil y Chile entre 2014 y 2025. ¿Cuántas realmente democratizaron algo?</div>
+        </div>
+      </div>
+
+      <!-- slide 2: cita -->
+      <div class="slide" id="s1-2">
+        <div class="slide-label">La tensión central</div>
+        <div class="slide-quote">
+          "No todo lo que <em>parece</em> participación, lo es."
+        </div>
+        <div class="slide-cite">— Premisa teórica del estudio</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="steps-col">
+
+    <div class="step active" data-slide="s1-0">
+      <div class="step-num">01 — La pregunta</div>
+      <h2 class="step-head">Desde los 2010, América Latina<br>apostó por la <em>democracia digital</em></h2>
+      <p class="step-body">Decenas de plataformas prometieron revolucionar la participación ciudadana. Consultas abiertas, presupuestos participativos en línea, co-creación de políticas públicas. La promesa era enorme: <strong>llevar la democracia directa al bolsillo de cualquier ciudadano con un teléfono.</strong></p>
+      <div class="step-callout"><p>Pero las promesas tecnológicas suelen ser más ruidosas que sus resultados.</p></div>
+    </div>
+
+    <div class="step" data-slide="s1-1">
+      <div class="step-num">01 — El alcance</div>
+      <h2 class="step-head">Tres países, <em>47 plataformas</em>,<br>una sola pregunta</h2>
+      <p class="step-body">Identificamos y codificamos 47 plataformas activas en Colombia, Brasil y Chile entre 2014 y 2025. Diseño comparado de caso más-similar: mismos sistemas presidenciales, democracias electorales consolidadas, procesos de digitalización del Estado activos.</p>
+    </div>
+
+    <div class="step" data-slide="s1-2">
+      <div class="step-num">01 — La hipótesis</div>
+      <h2 class="step-head">Democracia deliberativa<br>o <em>teatro de participación</em></h2>
+      <p class="step-body">Las plataformas de crowdsourcing pueden operar como mecanismos genuinos donde la ciudadanía incide en decisiones reales — o como espacios que simulan escucha sin alterar la distribución del poder.</p>
+      <p class="step-body">La hipótesis: el efecto democratizador depende de quién diseña la plataforma, qué capacidad vinculante tienen sus resultados, y a quién excluye estructuralmente.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ SCROLLY CHAPTER 2: METODOLOGÍA ══ -->
+<div class="scrolly-chapter" id="ch2" style="background:var(--surface);">
+
+  <div class="sticky-panel" style="background:var(--surface);">
+    <div class="sticky-inner">
+
+      <!-- slide: barras animadas -->
+      <div class="slide active" id="s2-0">
+        <div class="sbar-title">Plataformas que cumplen cada dimensión</div>
+        <div class="slide-bars" id="bars1">
+          <div class="sbar-row"><div class="sbar-label">Transparencia</div><div class="sbar-track"><div class="sbar-fill" data-w="81"></div></div><div class="sbar-val">81%</div></div>
+          <div class="sbar-row"><div class="sbar-label">Vinculatoriedad</div><div class="sbar-track"><div class="sbar-fill am" data-w="72"></div></div><div class="sbar-val">72%</div></div>
+          <div class="sbar-row"><div class="sbar-label">Inclusión digital</div><div class="sbar-track"><div class="sbar-fill am" data-w="58"></div></div><div class="sbar-val">58%</div></div>
+          <div class="sbar-row"><div class="sbar-label">Deliberación real</div><div class="sbar-track"><div class="sbar-fill dim" data-w="41"></div></div><div class="sbar-val">41%</div></div>
+          <div class="sbar-row"><div class="sbar-label">Implementación</div><div class="sbar-track"><div class="sbar-fill dim" data-w="34"></div></div><div class="sbar-val">34%</div></div>
+        </div>
+      </div>
+
+      <!-- slide: cita metodológica -->
+      <div class="slide" id="s2-1">
+        <div class="slide-label">Lo que medimos</div>
+        <div class="slide-quote">
+          "¿Quién puede participar? ¿Qué pasa con lo que se decide? ¿Alguien lo <em>implementa</em>?"
+        </div>
+        <div class="slide-cite">— Las tres preguntas que guiaron la codificación</div>
+      </div>
+
+      <!-- slide: stat implementación -->
+      <div class="slide" id="s2-2">
+        <div class="slide-stat">
+          <div class="slide-stat-num" style="color:var(--blue);">34%</div>
+          <div class="slide-stat-unit">implementación efectiva</div>
+          <div class="slide-stat-desc">Solo 1 de cada 3 plataformas puede demostrar que sus resultados se tradujeron en políticas reales.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="steps-col">
+
+    <div class="step active" data-slide="s2-0">
+      <div class="step-num">02 — Metodología</div>
+      <h2 class="step-head">Cinco dimensiones para<br>medir si <em>realmente funciona</em></h2>
+      <p class="step-body">Codificamos cada plataforma en cinco ejes: transparencia del proceso, capacidad vinculatoria de sus resultados, inclusión digital efectiva, calidad de la deliberación, e implementación real de lo decidido.</p>
+      <p class="step-body">El patrón que emerge es claro: <strong>las dimensiones técnicas se cumplen bien; las políticas, casi nunca.</strong></p>
+    </div>
+
+    <div class="step" data-slide="s2-1">
+      <div class="step-num">02 — El problema del diseño</div>
+      <h2 class="step-head">Cada decisión de diseño<br>es una decisión <em>política</em></h2>
+      <p class="step-body">Qué preguntas se pueden hacer, quién puede votar, cómo se agregan las preferencias — todo implica una teoría sobre quiénes cuentan como ciudadanos activos y qué tipo de participación merece ser escuchada.</p>
+      <div class="step-callout"><p>Diseñar una plataforma sin preguntarse quién no puede usarla es reproducir, con interfaz limpia, los mismos mecanismos de exclusión que la democracia representativa lleva siglos perpetuando.</p></div>
+    </div>
+
+    <div class="step" data-slide="s2-2">
+      <div class="step-num">02 — El talón de Aquiles</div>
+      <h2 class="step-head">La brecha de<br><em>implementación</em></h2>
+      <p class="step-body">Este es el hallazgo más incómodo: la mayoría de las plataformas son excelentes para recoger opiniones y pésimas para actuar sobre ellas. El problema no es técnico — es de voluntad política y capacidad burocrática.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ SCROLLY CHAPTER 3: HALLAZGOS ══ -->
+<div class="scrolly-chapter" id="ch3">
+
+  <div class="sticky-panel">
+    <div class="sticky-inner">
+
+      <div class="slide active" id="s3-0">
+        <div class="slide-label">Hallazgo 1</div>
+        <div class="slide-finding">
+          <div class="finding-n">Brasil</div>
+          <div class="finding-title">Lidera en escala. No en calidad deliberativa.</div>
+          <div class="finding-body">Mayor cantidad de plataformas activas y usuarios registrados de los tres países. Pero el tamaño no garantiza que la participación sea genuina o que sus resultados sean vinculantes.</div>
+        </div>
+      </div>
+
+      <div class="slide" id="s3-1">
+        <div class="slide-label">Hallazgo 2</div>
+        <div class="slide-finding" style="border-left-color:var(--amber);">
+          <div class="finding-n" style="color:var(--amber);">Colombia</div>
+          <div class="finding-title">Los diseños más deliberativos. La implementación, pendiente.</div>
+          <div class="finding-body">Las plataformas colombianas muestran el mayor cuidado en mecanismos de deliberación real. Pero la capacidad del Estado para implementar los resultados sigue siendo el cuello de botella.</div>
+        </div>
+      </div>
+
+      <div class="slide" id="s3-2">
+        <div class="slide-label">Hallazgo 3</div>
+        <div class="slide-quote" style="font-size:1.4rem;">
+          "La exclusión digital <em>replica</em> la exclusión política de siempre."
+        </div>
+        <div class="slide-cite">— Hallazgo transversal a los tres países</div>
+      </div>
+
+      <div class="slide" id="s3-3">
+        <div class="slide-label">Hallazgo 4</div>
+        <div class="slide-stat">
+          <div class="slide-stat-num" style="font-size:4rem;color:var(--muted);">Cambio<br>de gobierno</div>
+          <div class="slide-stat-desc" style="margin-top:1rem;">Las plataformas más robustas fueron discontinuadas con los cambios de administración. La tecnología no sobrevive sin voluntad política.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="steps-col">
+
+    <div class="step active" data-slide="s3-0">
+      <div class="step-num">03 — Hallazgos</div>
+      <h2 class="step-head">Brasil: <em>escala sin</em><br>deliberación</h2>
+      <p class="step-body">Brasil tiene el ecosistema más grande de participación digital de América Latina. Plataformas como Participa.br y los portales de presupuesto participativo de São Paulo y Porto Alegre acumulan millones de usuarios registrados.</p>
+      <p class="step-body">Pero la escala oculta un problema: <strong>muchas de estas plataformas funcionan como buzones de sugerencias digitales</strong>, no como mecanismos genuinos de co-decisión.</p>
+    </div>
+
+    <div class="step" data-slide="s3-1">
+      <div class="step-num">03 — Hallazgos</div>
+      <h2 class="step-head">Colombia: <em>buen diseño</em>,<br>Estado débil</h2>
+      <p class="step-body">Las plataformas colombianas muestran el mayor cuidado conceptual: procesos deliberativos con múltiples rondas, síntesis argumentativa, espacios de réplica. El diseño es sofisticado.</p>
+      <p class="step-body">El problema aparece después: <strong>¿quién implementa? ¿Con qué presupuesto? ¿Con qué mandato legal?</strong> El Estado colombiano tiene voluntad de escuchar y dificultades para actuar.</p>
+    </div>
+
+    <div class="step" data-slide="s3-2">
+      <div class="step-num">03 — Hallazgos</div>
+      <h2 class="step-head">La exclusión digital<br>no es un <em>bug</em>, es el sistema</h2>
+      <p class="step-body">Los perfiles de usuarios activos en estas plataformas reproducen los sesgos clásicos de la participación política: urbanos, con educación universitaria, con acceso estable a internet. Las poblaciones rurales, indígenas y en pobreza multidimensional están sistemáticamente ausentes.</p>
+      <div class="step-callout"><p>La brecha digital no es solo técnica. Es política. Y ninguna plataforma puede resolverla sola.</p></div>
+    </div>
+
+    <div class="step" data-slide="s3-3">
+      <div class="step-num">03 — Hallazgos</div>
+      <h2 class="step-head">El cambio de gobierno<br><em>borra</em> lo construido</h2>
+      <p class="step-body">En los tres países, las plataformas más robustas fueron discontinuadas, vaciadas de contenido o rediseñadas sin continuidad cuando cambió el gobierno. La institucionalidad importa más que la tecnología.</p>
+      <p class="step-body"><strong>La conclusión es estructural:</strong> sin anclaje legal y sin burocracia comprometida, la mejor plataforma de participación es temporal.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- HALLAZGOS EN CARDS FULLWIDTH -->
+<section class="full-section">
+  <div class="fs-label">04 — Síntesis</div>
+  <h2 class="fs-title">Los cuatro hallazgos<br>en <em>una sola vista</em></h2>
+  <div class="fs-divider"></div>
+  <div class="findings-grid">
+    <div class="fc" data-n="1"><div class="fc-n">Hallazgo 01</div><div class="fc-title">Escala ≠ democratización</div><div class="fc-text">Brasil lidera en número de plataformas y usuarios, pero la magnitud del sistema no garantiza que la participación sea vinculante o deliberativa.</div></div>
+    <div class="fc" data-n="2"><div class="fc-n">Hallazgo 02</div><div class="fc-title">La brecha de implementación es el talón de Aquiles</div><div class="fc-text">Solo el 34% de las plataformas puede demostrar que sus resultados se tradujeron en políticas implementadas.</div></div>
+    <div class="fc" data-n="3"><div class="fc-n">Hallazgo 03</div><div class="fc-title">La exclusión digital replica la exclusión política</div><div class="fc-text">Los perfiles de participantes reproducen los sesgos clásicos: urbanos, universitarios, conectados. Las poblaciones más vulnerables, ausentes.</div></div>
+    <div class="fc" data-n="4"><div class="fc-n">Hallazgo 04</div><div class="fc-title">El cambio de gobierno interrumpe los procesos</div><div class="fc-text">Las plataformas más robustas fueron discontinuadas con las nuevas administraciones. La tecnología no sobrevive sin voluntad política institucionalizada.</div></div>
+  </div>
+</section>
+
+<!-- IMPLICACIONES -->
+<section class="full-section dark">
+  <div class="fs-label">05 — Implicaciones</div>
+  <h2 class="fs-title">No necesitamos<br>más apps. Necesitamos<br>mejor <em>Estado</em>.</h2>
+  <div class="fs-divider"></div>
+  <div class="impl-grid">
+    <div class="impl-card">
+      <div class="impl-word b">Escala</div>
+      <div class="impl-text">No garantiza democratización. Más usuarios no equivale a más poder ciudadano. La pregunta es cuántos usuarios tienen incidencia real sobre decisiones reales.</div>
+    </div>
+    <div class="impl-card">
+      <div class="impl-word a">Diseño</div>
+      <div class="impl-text">El diseño deliberativo importa más que la sofisticación tecnológica. La arquitectura política de la plataforma precede y determina su arquitectura técnica.</div>
+    </div>
+    <div class="impl-card">
+      <div class="impl-word m">Estado</div>
+      <div class="impl-text">Un Estado fuerte con voluntad de escuchar e implementar es condición de posibilidad. Sin eso, la plataforma más elegante es solo decorado institucional.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="story-end">
+  <div class="end-inner">
+    <h2 class="end-h">¿Te quedaste con<br><em>más preguntas</em>?</h2>
+    <p class="end-p">Eso es exactamente lo que debería hacer un buen paper. Puedes leer el artículo completo en Cuadernos.info o escribirme directamente.</p>
+    <div class="end-btns">
+      <a href="#" class="btn-p">Leer el paper completo →</a>
+      <a href="index.html" class="btn-g">← Volver a investigación</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const bar=document.getElementById('progress');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  bar.style.width=(window.scrollY/h*100)+'%';
+},{passive:true});
+
+// Scrollytelling engine
+const chapters=document.querySelectorAll('.scrolly-chapter');
+chapters.forEach(ch=>{
+  const steps=ch.querySelectorAll('.step');
+  const panel=ch.querySelector('.sticky-panel');
+  if(!panel)return;
+
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting)return;
+      const slideId=e.target.dataset.slide;
+      if(!slideId)return;
+      // deactivate all steps in this chapter
+      steps.forEach(s=>s.classList.remove('active'));
+      e.target.classList.add('active');
+      // deactivate all slides in this panel
+      panel.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+      const target=document.getElementById(slideId);
+      if(target){
+        target.classList.add('active');
+        // animate bars if present
+        target.querySelectorAll('.sbar-fill').forEach(b=>{
+          setTimeout(()=>{b.style.width=b.dataset.w+'%';},100);
+        });
+      }
+    });
+  },{threshold:0.55,rootMargin:'0px 0px -10% 0px'});
+
+  steps.forEach(s=>obs.observe(s));
+});
+
+// Animate bars that are already active on load
+document.querySelectorAll('.slide.active .sbar-fill').forEach(b=>{
+  setTimeout(()=>{b.style.width=b.dataset.w+'%';},600);
+});
+</script>
+</body>
+</html>
