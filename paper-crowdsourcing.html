@@ -774,6 +774,7 @@ document.querySelectorAll('.scrolly-chapter').forEach(ch=>{
 
       const prev=panel.querySelector('.slide.active');
       const next=document.getElementById(slideId);
+      if(!next)return;
 
       if(prev&&prev!==next){
         if(prev.id==='s1-1')animateBubbles(prev.querySelector('.bubbles-fullscreen'),'out');
