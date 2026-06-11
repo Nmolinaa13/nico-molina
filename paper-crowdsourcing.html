@@ -766,8 +766,15 @@ document.querySelectorAll('.scrolly-chapter').forEach(ch=>{
       const slideId=e.target.dataset.slide;
       if(!slideId||slideId===currentSlide)return;
 
-      steps.forEach(s=>s.classList.remove('active'));
-      e.target.classList.add('active');
+    steps.forEach(s=>s.classList.remove('active'));
+e.target.classList.add('active');
+// También activa steps anteriores con el mismo slide
+steps.forEach(s=>{
+  if(s.dataset.slide===e.target.dataset.slide && 
+     s.compareDocumentPosition(e.target) & Node.DOCUMENT_POSITION_FOLLOWING){
+    s.classList.add('active');
+  }
+});
 
       const prev=panel.querySelector('.slide.active');
       const next=document.getElementById(slideId);
