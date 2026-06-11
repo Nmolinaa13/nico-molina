@@ -525,21 +525,21 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:
     <div class="step-callout"><p><strong>Proyecto Inventario</strong> desde Cuba: periodismo de precisión con bases de datos descargables diseñadas para medios independientes que operan con acceso intermitente a internet.</p></div>
   </div>
 
-  <div class="step" data-slide="s3-0">
+  <div class="step" data-slide="s3-0b">
     <div class="step-num">03 — Modelo deliberativo</div>
     <h2 class="step-head">8 plataformas con<br><em>dimensión deliberativa</em></h2>
     <p class="step-body"><strong>Tenemos Que Hablar Chile/Colombia</strong> recoge ideas e inconformidades de los grupos sociales para levantar información y construir consensos desde las bases hasta los tomadores de decisiones. <strong>Asuntos del Sur</strong>, presente en 29 países, ha capacitado a más de 7.200 agentes de innovación que impulsaron 436 proyectos de incidencia local.</p>
     <div class="step-callout"><p>La mayoría de plataformas deliberativas no operan solas: se articulan con vigilancia ciudadana y rendición de cuentas del modelo republicano.</p></div>
   </div>
 
-  <div class="step" data-slide="s3-0">
+  <div class="step" data-slide="s3-0c">
     <div class="step-num">03 — Modelo de desarrollo</div>
     <h2 class="step-head">6 plataformas que van<br><em>más allá del voto</em></h2>
     <p class="step-body"><strong>Ciudadanía Inteligente</strong> comenzó en Chile monitoreando candidatos y evolucionó hacia herramientas en 14 países. <strong>Patagonia Action Works</strong> conecta ciudadanos con organizaciones ambientales mediante donaciones, firmas y voluntariado. <strong>Agua para tod@s</strong> articula dispositivos online y offline para garantizar el acceso al agua en México.</p>
     <div class="step-callout"><p>Las plataformas de desarrollo frecuentemente desbordan los marcos institucionales, articulándose con movimientos sociales y agendas de transformación estructural.</p></div>
   </div>
 
-  <div class="step" data-slide="s3-0">
+  <div class="step" data-slide="s3-0d">
     <div class="step-num">03 — Modelo liberal</div>
     <h2 class="step-head">3 plataformas centradas<br>en el <em>voto informado</em></h2>
     <p class="step-body"><strong>MOE</strong> (Misión de Observación Electoral) fomenta la participación en procesos democráticos, realiza monitoreo y observación de elecciones y capacita en derechos políticos. <strong>Mi Rumbo</strong> busca visibilizar el presupuesto participativo en la Ciudad de México y permite enviar propuestas, votar proyectos y monitorear su ejecución.</p>
@@ -774,6 +774,7 @@ document.querySelectorAll('.scrolly-chapter').forEach(ch=>{
 
       const prev=panel.querySelector('.slide.active');
       const next=document.getElementById(slideId);
+      if(!next)return;
 
       if(prev&&prev!==next){
         if(prev.id==='s1-1')animateBubbles(prev.querySelector('.bubbles-fullscreen'),'out');
@@ -787,7 +788,10 @@ document.querySelectorAll('.scrolly-chapter').forEach(ch=>{
           if(slideId==='s1-0')showPins();
           if(slideId==='s1-1')setTimeout(()=>animateBubbles(next.querySelector('.bubbles-fullscreen'),'in'),80);
           if(slideId==='s2-0')animateTentacles(document.getElementById('tentaclesSvg'));
-          if(slideId==='s3-0'){barsShown=0;setTimeout(()=>showNextBar(),200);}
+         if(slideId==='s3-0'){barsShown=0;setTimeout(()=>showNextBar(),200);}
+          if(slideId==='s3-0b')setTimeout(()=>showNextBar(),100);
+          if(slideId==='s3-0c')setTimeout(()=>showNextBar(),100);
+          if(slideId==='s3-0d')setTimeout(()=>showNextBar(),100);
         },prev?120:0);
       }
     });
