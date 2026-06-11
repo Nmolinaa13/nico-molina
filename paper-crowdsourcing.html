@@ -762,7 +762,7 @@ document.querySelectorAll('.scrolly-chapter').forEach(ch=>{
     entries.forEach(e=>{
       if(!e.isIntersecting)return;
       const slideId=e.target.dataset.slide;
-      if(!slideId||slideId===currentSlide)return;
+      if(!slideId)return;
 
       const currentIdx=steps.indexOf(e.target);
 
@@ -796,10 +796,12 @@ document.querySelectorAll('.scrolly-chapter').forEach(ch=>{
   steps.forEach(s=>obs.observe(s));
 });
 /* Bar chart advances with steps in ch3 */
-const ch3Steps=document.querySelectorAll('#ch3 .step');
+const ch3Steps=Array.from(document.querySelectorAll('#ch3 .step'));
 const ch3Obs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
-    if(e.isIntersecting&&e.target.dataset.slide==='s3-0'){
+    if(!e.isIntersecting)return;
+    const idx=ch3Steps.indexOf(e.target);
+    if(idx>0&&e.target.dataset.slide==='s3-0'){
       showNextBar();
     }
   });
