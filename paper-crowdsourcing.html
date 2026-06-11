@@ -753,7 +753,7 @@ function showNextBar(){
 
 /* SCROLLYTELLING ENGINE */
 document.querySelectorAll('.scrolly-chapter').forEach(ch=>{
-  const steps=ch.querySelectorAll('.step');
+  const steps=Array.from(ch.querySelectorAll('.step'));
   const panel=ch.querySelector('.sticky-panel');
   if(!panel)return;
   let currentSlide=null;
@@ -764,22 +764,13 @@ document.querySelectorAll('.scrolly-chapter').forEach(ch=>{
       const slideId=e.target.dataset.slide;
       if(!slideId||slideId===currentSlide)return;
 
-    // Desactiva todos
-steps.forEach(s=>s.classList.remove('active'));
-// Activa el actual y todos los anteriores con mismo slide
-steps.forEach(s=>{
-  const isCurrent = s === e.target;
-  const isBefore = !!(s.compareDocumentPosition(e.target) & Node.DOCUMENT_POSITION_FOLLOWING);
-  const sameSlide = s.dataset.slide === e.target.dataset.slide;
-  if(isCurrent || (isBefore && sameSlide)) s.classList.add('active');
-});
-// También activa steps anteriores con el mismo slide
-steps.forEach(s=>{
-  if(s.dataset.slide===e.target.dataset.slide && 
-     s.compareDocumentPosition(e.target) & Node.DOCUMENT_POSITION_FOLLOWING){
-    s.classList.add('active');
-  }
-});
+      const currentIdx=steps.indexOf(e.target);
+
+      // Activa el actual y todos los anteriores
+      steps.forEach((s,i)=>{
+        if(i<=currentIdx) s.classList.add('active');
+        else s.classList.remove('active');
+      });
 
       const prev=panel.querySelector('.slide.active');
       const next=document.getElementById(slideId);
@@ -804,7 +795,6 @@ steps.forEach(s=>{
 
   steps.forEach(s=>obs.observe(s));
 });
-
 /* Bar chart advances with steps in ch3 */
 const ch3Steps=document.querySelectorAll('#ch3 .step');
 const ch3Obs=new IntersectionObserver(entries=>{
