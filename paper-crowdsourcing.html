@@ -69,7 +69,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:
 .step-callout p{font-size:0.86rem;color:var(--muted);line-height:1.6;}
 
 /* BUBBLES */
-.bubbles-container{width:300%;height:300%;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:12px;padding:1rem;}
+.bubbles-container{width:100%;height:100%;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:12px;padding:1rem;}
 .bubble{
   border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
   cursor:default;transition:transform 0.3s ease,box-shadow 0.3s ease;
@@ -79,8 +79,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:
 .bubble.pop-in{animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;}
 .bubble.pop-out{animation:popOut 0.3s ease-in forwards;}
 .bubble:hover{transform:scale(1.08);}
-.bubble img{width:70%;height:70%;object-fit:contain;filter:brightness(0) invert(1);}
-.bubble.has-logo img{width:80%;height:80%;object-fit:contain;filter:none;}
+.bubble img{width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1);}
+.bubble.has-logo img{width:100%;height:100%;object-fit:contain;filter:none;}
 .bubble-text{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.04em;color:rgba(255,255,255,0.9);text-align:center;padding:0 6px;line-height:1.3;font-weight:700;text-transform:uppercase;}
 .bubble-country{font-family:var(--mono);font-size:0.48rem;color:rgba(255,255,255,0.6);text-align:center;margin-top:2px;}
 .bubble.type-rep{background:var(--blue);}
