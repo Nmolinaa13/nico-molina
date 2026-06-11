@@ -773,7 +773,23 @@ document.querySelectorAll('.scrolly-chapter').forEach(ch=>{
       });
 
       const prev=panel.querySelector('.slide.active');
-      const next=document.getElementById(slideId);
+      const panelSlideId=slideId.startsWith('s3-0')?'s3-0':slideId;
+      const next=document.getElementById(panelSlideId);
+
+      // Avanza barra según el slide
+      const barMap={'s3-0':0,'s3-0b':1,'s3-0c':2,'s3-0d':3};
+      if(slideId in barMap){
+        const targetBar=barMap[slideId];
+        for(let i=barsShown;i<=targetBar;i++){
+          const row=document.getElementById(barSteps[i]?barSteps[i][0]:null);
+          if(row&&!row.classList.contains('visible')){
+            row.classList.add('visible');
+            setTimeout(()=>{row.querySelectorAll('.bc-fill').forEach(f=>{f.style.width=f.dataset.w+'%';});},150);
+            barsShown=i+1;
+          }
+        }
+      }
+
       if(!next)return;
 
       if(prev&&prev!==next){
