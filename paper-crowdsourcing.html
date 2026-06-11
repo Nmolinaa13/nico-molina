@@ -93,7 +93,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:
 
 /* LATIN AMERICA MAP */
 .map-container{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem;}
-.map-container svg{max-width:100%;max-height:100%;}
+.map-container{width:100%;height:100%;padding:1rem;position:relative;overflow:hidden;}
+  .map-pin{
+  background:var(--amber);color:#0E0E10;
+  font-family:var(--mono);font-size:0.6rem;font-weight:700;
+  padding:3px 6px;border-radius:3px;
+  white-space:nowrap;cursor:default;
+  animation:fadeUp 0.5s ease forwards;
+}
 
 /* DEMOCRACY TENTACLES */
 .tentacles-container{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;}
@@ -198,62 +205,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:
       <!-- slide 0: mapa América Latina -->
       <div class="slide active" id="s1-0">
         <div class="slide-label">Los 7 países</div>
-        <div class="map-container">
-          <svg viewBox="0 0 340 480" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .country{fill:#1E1E24;stroke:#2A2A32;stroke-width:1;}
-                .country.active{fill:#3B5BDB;stroke:#E8A325;stroke-width:1.5;}
-                .country-label{font-family:'Space Mono',monospace;font-size:7px;fill:#F2EFE7;text-anchor:middle;}
-                .country-dot{fill:#E8A325;}
-              </style>
-            </defs>
-            <!-- Mexico -->
-            <path class="country active" d="M40,60 L120,55 L130,75 L120,95 L90,100 L60,90 L35,80 Z" id="mx"/>
-            <text class="country-label" x="82" y="80">México</text>
-            <!-- Cuba -->
-            <path class="country active" d="M130,90 L165,88 L168,96 L135,98 Z" id="cu"/>
-            <text class="country-label" x="149" y="97">Cuba</text>
-            <!-- Colombia -->
-            <path class="country active" d="M90,130 L125,125 L135,150 L125,170 L95,168 L80,150 Z" id="co"/>
-            <text class="country-label" x="107" y="152">Colombia</text>
-            <!-- Peru -->
-            <path class="country active" d="M80,175 L115,172 L118,210 L95,225 L72,210 Z" id="pe"/>
-            <text class="country-label" x="95" y="202">Perú</text>
-            <!-- Chile -->
-            <path class="country active" d="M95,230 L110,228 L118,290 L115,340 L100,345 L90,340 L88,290 Z" id="cl"/>
-            <text class="country-label" x="103" y="290">Chile</text>
-            <!-- Argentina -->
-            <path class="country active" d="M108,230 L145,225 L155,270 L150,320 L130,350 L110,345 L100,320 L105,270 Z" id="ar"/>
-            <text class="country-label" x="127" y="285">Argentina</text>
-            <!-- Uruguay -->
-            <path class="country active" d="M148,310 L168,308 L172,328 L152,335 L142,325 Z" id="uy"/>
-            <text class="country-label" x="157" y="325">Uruguay</text>
-            <!-- Other countries (inactive) -->
-            <path class="country" d="M125,130 L165,120 L175,145 L165,165 L135,165 Z"/>
-            <path class="country" d="M165,120 L200,115 L205,140 L175,145 Z"/>
-            <path class="country" d="M125,170 L165,165 L170,195 L145,205 L118,195 Z"/>
-            <path class="country" d="M170,195 L205,190 L210,220 L175,225 L145,215 Z"/>
-            <path class="country" d="M155,225 L210,220 L215,260 L175,265 L155,255 Z"/>
-            <path class="country" d="M175,265 L215,260 L218,300 L185,305 L162,295 Z"/>
-            <!-- Dots on active countries -->
-            <circle class="country-dot" cx="82" cy="70" r="3"/>
-            <circle class="country-dot" cx="149" cy="93" r="2.5"/>
-            <circle class="country-dot" cx="107" cy="148" r="3"/>
-            <circle class="country-dot" cx="95" cy="198" r="3"/>
-            <circle class="country-dot" cx="103" cy="260" r="3"/>
-            <circle class="country-dot" cx="127" cy="275" r="3"/>
-            <circle class="country-dot" cx="157" cy="320" r="2.5"/>
-            <!-- Legend -->
-            <rect x="180" y="60" width="12" height="12" fill="#3B5BDB" rx="2"/>
-            <text x="196" y="71" font-family="Space Mono" font-size="7" fill="#8A8898">País del estudio</text>
-            <rect x="180" y="78" width="12" height="12" fill="#1E1E24" stroke="#2A2A32" stroke-width="1" rx="2"/>
-            <text x="196" y="89" font-family="Space Mono" font-size="7" fill="#8A8898">Otros países</text>
-            <!-- Title -->
-            <text x="170" y="30" font-family="Space Mono" font-size="9" fill="#E8A325" text-anchor="middle" letter-spacing="2">LATINNO DATABASE</text>
-            <text x="170" y="44" font-family="Space Mono" font-size="7" fill="#8A8898" text-anchor="middle">2023–2025</text>
-          </svg>
-        </div>
+       <div class="map-container" style="position:relative;width:100%;height:100%;overflow:hidden;">
+  <img src="img/mapa-latam.png" alt="América Latina" style="width:100%;height:100%;object-fit:contain;opacity:0.85;">
+  <!-- Pins sobre los 7 países -->
+  <div style="position:absolute;top:18%;left:22%;transform:translate(-50%,-50%);" class="map-pin">MX</div>
+  <div style="position:absolute;top:22%;left:48%;transform:translate(-50%,-50%);" class="map-pin">CU</div>
+  <div style="position:absolute;top:38%;left:38%;transform:translate(-50%,-50%);" class="map-pin">CO</div>
+  <div style="position:absolute;top:50%;left:32%;transform:translate(-50%,-50%);" class="map-pin">PE</div>
+  <div style="position:absolute;top:48%;left:52%;transform:translate(-50%,-50%);" class="map-pin">AR</div>
+  <div style="position:absolute;top:55%;left:50%;transform:translate(-50%,-50%);" class="map-pin">UY</div>
+  <div style="position:absolute;top:58%;left:30%;transform:translate(-50%,-50%);" class="map-pin">CL</div>
+</div>
       </div>
 
       <!-- slide 1: burbujas de plataformas -->
