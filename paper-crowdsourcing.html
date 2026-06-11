@@ -707,26 +707,23 @@ function animateBubbles(container,inOut){
 /* TENTACLES */
 function animateTentacles(svg){
   if(!svg)return;
-  // animate lines sequentially
   ['tl1','tl2','tl3','tl4'].forEach((id,i)=>{
     setTimeout(()=>{
       const el=svg.querySelector('#'+id);
       if(el)el.classList.add('drawn');
-    },i*280+150);
+    },i*600+400);
   });
-  // show boxes after lines
   ['tb1','tb2','tb3','tb4'].forEach((id,i)=>{
     setTimeout(()=>{
       const el=svg.querySelector('#'+id);
       if(el)el.classList.add('visible');
-    },i*280+500);
+    },i*600+900);
   });
-  // show descriptions last
   ['tbt1','tbt2','tbt3','tbt4'].forEach((id,i)=>{
     setTimeout(()=>{
       const el=svg.querySelector('#'+id);
       if(el)el.classList.add('visible');
-    },i*280+900);
+    },i*600+1400);
   });
 }
 
