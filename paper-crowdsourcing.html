@@ -787,7 +787,7 @@ document.querySelectorAll('.scrolly-chapter').forEach(ch=>{
           if(slideId==='s1-0')showPins();
           if(slideId==='s1-1')setTimeout(()=>animateBubbles(next.querySelector('.bubbles-fullscreen'),'in'),80);
           if(slideId==='s2-0')animateTentacles(document.getElementById('tentaclesSvg'));
-          if(slideId==='s3-0'){barsShown=0;showNextBar();}
+          if(slideId==='s3-0'){barsShown=0;setTimeout(()=>showNextBar(),200);}
         },prev?120:0);
       }
     });
@@ -802,7 +802,7 @@ const ch3Obs=new IntersectionObserver(entries=>{
     if(!e.isIntersecting)return;
     const idx=ch3Steps.indexOf(e.target);
     if(idx>0&&e.target.dataset.slide==='s3-0'){
-      showNextBar();
+  setTimeout(()=>showNextBar(),100);
     }
   });
 },{threshold:0.6});
