@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nicolás Molina-Arroyave — Comunicación Política y Democracia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,400;1,900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{max-width:100%;overflow-x:hidden;}
+
+:root{
+  /* Brochure palette */
+  --cream:#EDE4CC;
+  --cream-dark:#E0D5B5;
+  --orange:#E8621A;
+  --orange-dim:#C44F10;
+  --blue:#2B4DB8;
+  --blue-dim:#1E3A8A;
+  --teal:#1E8A8A;
+  --gold:#C8860A;
+  --black:#111008;
+  --ink:#1A1712;
+  --muted:#5A5240;
+  --muted-light:#8A7D65;
+
+  --sans:'Inter',sans-serif;
+  --cond:'Barlow Condensed',sans-serif;
+  --serif:'Playfair Display',serif;
+  --mono:'Space Mono',monospace;
+
+  /* paper texture via SVG noise */
+  --paper-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* ── NO DARK MODE — single cream/protest look ── */
+body{background:var(--cream);background-image:var(--paper-texture);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;overflow-x:hidden;}
+html{scroll-behavior:smooth;}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.9rem 5vw;
+  background:var(--black);
+  border-bottom:3px solid var(--orange);
+  width:100%;box-sizing:border-box;
+  transition:box-shadow 0.3s;
+}
+nav.scrolled{box-shadow:0 4px 0 var(--orange);}
+.nav-logo{
+  font-family:var(--cond);font-size:1.1rem;font-weight:900;
+  letter-spacing:0.1em;color:var(--cream);text-decoration:none;
+  text-transform:uppercase;
+}
+.nav-logo span{color:var(--orange);}
+.nav-links{display:flex;gap:1.8rem;list-style:none;}
+.nav-links a{
+  font-family:var(--cond);font-size:0.85rem;font-weight:700;
+  letter-spacing:0.1em;color:#aaa;text-decoration:none;
+  text-transform:uppercase;transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--cream);}
+.nav-right{display:flex;align-items:center;gap:0.8rem;}
+.lang-switch{
+  font-family:var(--mono);font-size:0.7rem;letter-spacing:0.08em;
+  padding:0.3rem 0.7rem;border:1px solid #444;color:#888;
+  text-decoration:none;transition:all 0.2s;
+}
+.lang-switch:hover{border-color:var(--orange);color:var(--orange);}
+.nav-cta{
+  font-family:var(--cond);font-size:0.85rem;font-weight:900;
+  letter-spacing:0.1em;padding:0.5rem 1.2rem;
+  background:var(--orange);color:var(--cream);
+  text-decoration:none;text-transform:uppercase;
+  box-shadow:3px 3px 0 var(--cream);
+  transition:all 0.15s;
+}
+.nav-cta:hover{background:var(--orange-dim);box-shadow:1px 1px 0 var(--cream);}
+
+/* ─── HERO ─── */
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:flex-start;
+  padding:9rem 5vw 5rem;position:relative;overflow:hidden;
+  background:var(--black);
+}
+.hero-collage-band{
+  position:absolute;top:0;right:0;bottom:0;width:42%;
+  background:var(--blue);opacity:0.15;
+  clip-path:polygon(15% 0,100% 0,100% 100%,0% 100%);
+}
+.hero-collage-orange{
+  position:absolute;bottom:0;left:0;right:0;height:8px;
+  background:var(--orange);
+}
+.hero-inner{max-width:1100px;width:100%;position:relative;z-index:1;}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:0.72rem;letter-spacing:0.2em;
+  color:var(--orange);text-transform:uppercase;margin-bottom:1.2rem;
+  opacity:0;animation:fadeUp 0.6s 0.2s forwards;
+}
+.hero-name{
+  font-family:var(--cond);font-size:clamp(4rem,10vw,8.5rem);
+  font-weight:900;line-height:0.9;text-transform:uppercase;
+  color:var(--cream);margin-bottom:1rem;
+  opacity:0;animation:fadeUp 0.7s 0.4s forwards;
+  text-wrap:balance;
+}
+.hero-name em{font-style:italic;color:var(--orange);font-family:var(--serif);font-size:0.65em;}
+.hero-typewriter{
+  font-family:var(--serif);font-size:clamp(1rem,2vw,1.4rem);
+  font-style:italic;color:#aaa;min-height:2rem;margin-bottom:2rem;
+  opacity:0;animation:fadeUp 0.6s 0.7s forwards;
+}
+.hero-typewriter span{border-right:2px solid var(--orange);padding-right:2px;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2.5rem;
+  opacity:0;animation:fadeUp 0.6s 1s forwards;}
+.tag{
+  font-family:var(--cond);font-size:0.8rem;font-weight:700;
+  letter-spacing:0.08em;padding:0.3rem 0.8rem;
+  border:2px solid #333;color:#888;text-transform:uppercase;
+}
+.tag.orange{border-color:var(--orange);color:var(--orange);}
+.tag.blue{border-color:var(--blue);color:#7B9FFF;}
+.tag.teal{border-color:var(--teal);color:#4DCFCF;}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;
+  opacity:0;animation:fadeUp 0.6s 1.2s forwards;}
+.btn-primary{
+  font-family:var(--cond);font-size:0.95rem;font-weight:900;
+  letter-spacing:0.08em;padding:0.85rem 2rem;
+  background:var(--orange);color:var(--cream);
+  text-decoration:none;text-transform:uppercase;
+  box-shadow:4px 4px 0 var(--cream);display:inline-block;
+  transition:all 0.15s;
+}
+.btn-primary:hover{background:var(--orange-dim);box-shadow:2px 2px 0 var(--cream);}
+.btn-ghost{
+  font-family:var(--cond);font-size:0.95rem;font-weight:900;
+  letter-spacing:0.08em;padding:0.85rem 2rem;
+  border:2px solid #555;color:var(--cream);
+  text-decoration:none;text-transform:uppercase;
+  display:inline-block;transition:all 0.15s;
+}
+.btn-ghost:hover{border-color:var(--cream);}
+.scroll-hint{
+  position:absolute;bottom:2.5rem;left:5vw;
+  display:flex;align-items:center;gap:0.8rem;
+  font-family:var(--mono);font-size:0.68rem;color:#555;
+  letter-spacing:0.12em;text-transform:uppercase;
+  opacity:0;animation:fadeUp 0.6s 1.5s forwards;z-index:1;
+}
+.scroll-line{width:40px;height:1px;background:#444;position:relative;overflow:hidden;}
+.scroll-line::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:var(--orange);animation:lineSlide 1.8s 2s infinite;}
+
+/* ─── SECTION SHARED ─── */
+section{padding:6rem 5vw;width:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;}
+section>*{width:100%;max-width:1100px;}
+
+/* numbered band header — protest style */
+.section-band{
+  display:flex;align-items:center;gap:0;margin-bottom:2.5rem;
+}
+.section-num{
+  font-family:var(--cond);font-size:1rem;font-weight:900;
+  letter-spacing:0.1em;color:var(--orange);
+  background:var(--black);
+  padding:0.4rem 1rem;text-transform:uppercase;
+  border-right:4px solid var(--orange);flex-shrink:0;
+}
+.section-label-text{
+  font-family:var(--cond);font-size:1rem;font-weight:700;
+  letter-spacing:0.12em;color:var(--cream);
+  background:var(--black);
+  padding:0.4rem 1.2rem;text-transform:uppercase;flex:1;
+}
+.section-title{
+  font-family:var(--cond);font-size:clamp(2.5rem,5vw,4.5rem);
+  font-weight:900;line-height:0.95;text-transform:uppercase;
+  margin-bottom:1.5rem;color:var(--black);
+  text-wrap:balance;
+}
+.section-title em{
+  font-style:italic;font-family:var(--serif);
+  color:var(--orange);text-transform:none;
+}
+.section-title .blue-em{color:var(--blue);}
+.section-title .teal-em{color:var(--teal);}
+.divider-thick{width:60px;height:5px;background:var(--orange);margin-bottom:2.5rem;}
+
+/* ─── 01 SOBRE ─── */
+#sobre{background:var(--cream);border-top:5px solid var(--black);}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.about-bio{font-size:1rem;color:var(--ink);line-height:1.8;}
+.about-bio p+p{margin-top:1.1rem;}
+.about-bio strong{color:var(--black);font-weight:700;}
+.affil-list{margin-top:2rem;display:flex;flex-direction:column;gap:0;}
+.affil{
+  display:flex;align-items:center;gap:0;
+  font-family:var(--cond);font-size:0.9rem;font-weight:700;
+  letter-spacing:0.05em;color:var(--ink);
+  border-bottom:1px solid rgba(17,16,8,0.15);
+  padding:0.7rem 0;text-transform:uppercase;
+}
+.affil-dot{
+  width:24px;height:24px;background:var(--blue);
+  display:flex;align-items:center;justify-content:center;
+  margin-right:0.8rem;flex-shrink:0;
+  font-family:var(--mono);font-size:0.6rem;color:var(--cream);
+}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.stat-card{
+  background:var(--black);padding:1.5rem;
+  box-shadow:4px 4px 0 var(--orange);
+}
+.stat-num{
+  font-family:var(--cond);font-size:3rem;font-weight:900;
+  color:var(--orange);line-height:1;
+}
+.stat-label{
+  font-family:var(--cond);font-size:0.8rem;font-weight:700;
+  color:var(--cream);letter-spacing:0.08em;text-transform:uppercase;margin-top:0.4rem;
+}
+
+/* ─── 02 REDES ─── */
+#redes{background:var(--black);}
+#redes .section-title{color:var(--cream);}
+#redes .section-title em{color:var(--orange);}
+.redes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;}
+.red-card{
+  background:rgba(255,255,255,0.04);
+  border:2px solid rgba(255,255,255,0.1);
+  padding:1.8rem 1.5rem;text-decoration:none;color:var(--cream);
+  transition:all 0.2s;display:block;
+}
+.red-card:hover{
+  border-color:var(--orange);
+  transform:translateY(-3px) rotate(-0.3deg);
+  box-shadow:4px 4px 0 var(--orange);
+}
+.red-icon{
+  font-family:var(--mono);font-size:1.1rem;
+  margin-bottom:0.7rem;color:var(--orange);
+  font-weight:700;letter-spacing:0.05em;
+}
+.red-name{
+  font-family:var(--cond);font-size:1.1rem;font-weight:900;
+  text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.2rem;
+}
+.red-handle{font-family:var(--mono);font-size:0.68rem;color:#666;letter-spacing:0.04em;}
+.red-desc{font-size:0.83rem;color:#888;margin-top:0.7rem;line-height:1.5;}
+
+/* ─── 03 INVESTIGACIÓN ─── */
+#investigacion{background:var(--cream-dark);border-top:5px solid var(--black);}
+.papers-list{display:flex;flex-direction:column;gap:0;border:3px solid var(--black);}
+.paper-row{
+  border-bottom:2px solid var(--black);padding:2rem 2.5rem;
+  background:var(--cream);transition:background 0.2s;
+}
+.paper-row:last-child{border-bottom:none;}
+.paper-row:hover{background:rgba(232,98,26,0.05);}
+.paper-row-top{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start;margin-bottom:1rem;}
+.paper-year-badge{
+  font-family:var(--cond);font-size:0.78rem;font-weight:700;
+  color:var(--orange);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.3rem;
+}
+.paper-row-title{
+  font-family:var(--cond);font-size:1.3rem;font-weight:900;
+  line-height:1.2;text-transform:uppercase;margin-bottom:0.3rem;color:var(--black);
+}
+.paper-row-journal{
+  font-family:var(--mono);font-size:0.7rem;color:var(--muted);letter-spacing:0.04em;
+}
+.paper-row-coauthors{font-size:0.82rem;color:var(--muted);margin-top:0.2rem;}
+.paper-row-excerpt{
+  font-size:0.9rem;color:var(--muted);line-height:1.7;
+  margin-bottom:1.2rem;max-width:700px;
+}
+.paper-actions{display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;}
+.btn-caja{
+  font-family:var(--cond);font-size:0.85rem;font-weight:900;
+  letter-spacing:0.06em;padding:0.55rem 1.1rem;
+  background:var(--orange);color:var(--cream);
+  text-decoration:none;text-transform:uppercase;
+  box-shadow:3px 3px 0 var(--black);
+  transition:all 0.15s;display:inline-flex;align-items:center;gap:0.4rem;border:none;cursor:pointer;
+}
+.btn-caja:hover{background:var(--orange-dim);box-shadow:1px 1px 0 var(--black);}
+.btn-paper{
+  font-family:var(--cond);font-size:0.85rem;font-weight:900;
+  letter-spacing:0.06em;padding:0.55rem 1.1rem;
+  border:2px solid var(--blue);color:var(--blue);
+  text-decoration:none;text-transform:uppercase;
+  transition:all 0.15s;display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;
+}
+.btn-paper:hover{background:var(--blue);color:var(--cream);}
+.btn-material{
+  font-family:var(--cond);font-size:0.85rem;font-weight:900;
+  letter-spacing:0.06em;padding:0.55rem 1.1rem;
+  border:2px solid var(--muted-light);color:var(--muted);
+  text-decoration:none;text-transform:uppercase;
+  transition:all 0.15s;display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;
+}
+.btn-material:hover{border-color:var(--black);color:var(--black);}
+.btn-pronto{
+  font-family:var(--cond);font-size:0.85rem;font-weight:700;
+  letter-spacing:0.06em;padding:0.55rem 1.1rem;
+  border:2px dashed var(--muted-light);color:var(--muted-light);
+  text-transform:uppercase;display:inline-flex;align-items:center;gap:0.4rem;cursor:default;
+}
+.paper-status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.dot-live{background:#22c55e;}
+.dot-pending{background:var(--muted-light);}
+
+/* ─── 04 BLOG ─── */
+#blog{background:var(--cream);}
+.blog-eyebrow{
+  font-family:var(--mono);font-size:0.75rem;color:var(--muted);
+  letter-spacing:0.04em;margin-bottom:2rem;max-width:600px;
+}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;}
+.blog-card{
+  background:var(--cream);border:2px solid var(--black);
+  padding:2rem;text-decoration:none;color:inherit;
+  transition:all 0.2s;display:block;
+}
+.blog-card:hover{
+  transform:translateY(-3px) rotate(-0.2deg);
+  box-shadow:4px 4px 0 var(--black);
+}
+.blog-type{
+  font-family:var(--cond);font-size:0.72rem;font-weight:700;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--orange);margin-bottom:0.7rem;
+}
+.blog-card-title{
+  font-family:var(--cond);font-size:1.2rem;font-weight:900;
+  text-transform:uppercase;line-height:1.2;margin-bottom:0.7rem;color:var(--black);
+}
+.blog-excerpt{font-size:0.87rem;color:var(--muted);line-height:1.55;margin-bottom:1rem;}
+.blog-date{
+  font-family:var(--mono);font-size:0.68rem;color:var(--orange);
+  letter-spacing:0.1em;text-transform:uppercase;
+}
+.newsletter-cta{
+  margin-top:2.5rem;
+  background:var(--black);
+  border:3px solid var(--orange);
+  padding:2.5rem 3rem;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:2rem;flex-wrap:wrap;
+  box-shadow:6px 6px 0 var(--orange);
+}
+.newsletter-cta-text{
+  font-family:var(--serif);font-size:1.4rem;font-weight:700;
+  font-style:italic;color:var(--cream);max-width:500px;
+}
+
+/* ─── 05 DE POLA Y POLÍTICA ─── */
+#depola{background:var(--blue);border-top:5px solid var(--black);}
+#depola .section-title{color:var(--cream);}
+.depola-badge{
+  display:inline-block;
+  font-family:var(--cond);font-size:0.8rem;font-weight:900;
+  letter-spacing:0.15em;text-transform:uppercase;
+  background:var(--orange);color:var(--cream);
+  padding:0.3rem 1rem;margin-bottom:1.5rem;
+  box-shadow:3px 3px 0 var(--cream);
+}
+.depola-lead{
+  font-size:1.05rem;color:rgba(237,228,204,0.85);
+  line-height:1.7;margin-bottom:3rem;max-width:700px;
+}
+.depola-products{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1rem;margin-bottom:3rem;
+}
+.depola-product{
+  background:rgba(255,255,255,0.07);
+  border:2px solid rgba(255,255,255,0.2);
+  padding:1.5rem 1.2rem;
+  transition:all 0.2s;
+}
+.depola-product:hover{
+  background:rgba(255,255,255,0.12);
+  border-color:var(--orange);
+  transform:translateY(-3px);
+  box-shadow:3px 3px 0 var(--orange);
+}
+.depola-product-emoji{font-size:1.6rem;margin-bottom:0.5rem;display:block;}
+.depola-product-name{
+  font-family:var(--cond);font-size:1rem;font-weight:900;
+  text-transform:uppercase;letter-spacing:0.08em;
+  color:var(--cream);margin-bottom:0.4rem;
+}
+.depola-product-price{
+  font-family:var(--mono);font-size:1.1rem;font-weight:700;
+  color:var(--orange);font-variant-numeric:tabular-nums;
+}
+.depola-actions{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-depola{
+  font-family:var(--cond);font-size:0.95rem;font-weight:900;
+  letter-spacing:0.08em;padding:0.85rem 2rem;
+  background:var(--orange);color:var(--cream);
+  text-decoration:none;text-transform:uppercase;
+  box-shadow:4px 4px 0 var(--cream);display:inline-block;
+  transition:all 0.15s;
+}
+.btn-depola:hover{background:var(--orange-dim);box-shadow:2px 2px 0 var(--cream);}
+.btn-depola-ghost{
+  font-family:var(--cond);font-size:0.95rem;font-weight:900;
+  letter-spacing:0.08em;padding:0.85rem 2rem;
+  border:2px solid rgba(255,255,255,0.4);color:var(--cream);
+  text-decoration:none;text-transform:uppercase;
+  display:inline-block;transition:all 0.15s;
+}
+.btn-depola-ghost:hover{border-color:var(--cream);}
+
+/* ─── 06 MEDIOS ─── */
+#medios{background:var(--cream-dark);border-top:5px solid var(--black);}
+.medios-list{width:100%;}
+.medio-item{
+  display:grid;grid-template-columns:100px minmax(0,1fr) auto;
+  gap:1.5rem;align-items:center;padding:1.5rem 0;
+  border-bottom:2px solid rgba(17,16,8,0.12);
+  text-decoration:none;color:inherit;
+  transition:background 0.15s;
+}
+.medio-item:hover{background:rgba(232,98,26,0.05);}
+.medio-date-block{
+  font-family:var(--cond);font-size:0.8rem;font-weight:700;
+  color:var(--muted);letter-spacing:0.1em;text-align:center;line-height:1.4;
+  text-transform:uppercase;
+}
+.medio-date-block strong{
+  display:block;font-size:2rem;
+  color:var(--orange);font-family:var(--cond);
+  font-weight:900;line-height:1;
+}
+.medio-outlet{
+  font-family:var(--cond);font-size:0.75rem;font-weight:700;
+  color:var(--blue);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.3rem;
+}
+.medio-title-text{
+  font-family:var(--cond);font-size:1.05rem;font-weight:900;
+  text-transform:uppercase;margin-bottom:0.2rem;overflow-wrap:break-word;word-break:break-word;
+}
+.medio-format{font-size:0.82rem;color:var(--muted);}
+.medio-arrow{font-family:var(--mono);color:var(--muted);font-size:1.2rem;flex-shrink:0;}
+
+/* ─── 07 CONTACTO ─── */
+#contacto{background:var(--black);text-align:center;border-top:5px solid var(--orange);}
+.contact-inner{max-width:min(700px,90vw);margin:0 auto;}
+.contact-title{
+  font-family:var(--cond);font-size:clamp(3rem,7vw,6rem);
+  font-weight:900;line-height:0.9;text-transform:uppercase;
+  margin-bottom:1.2rem;color:var(--cream);
+}
+.contact-title em{font-style:italic;font-family:var(--serif);color:var(--orange);text-transform:none;}
+.contact-sub{font-size:0.95rem;color:#888;margin-bottom:2.5rem;line-height:1.7;}
+.contact-links{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;}
+.btn-contact{
+  font-family:var(--cond);font-size:0.95rem;font-weight:900;
+  letter-spacing:0.08em;padding:0.85rem 2rem;
+  background:var(--orange);color:var(--cream);
+  text-decoration:none;text-transform:uppercase;
+  box-shadow:4px 4px 0 var(--cream);display:inline-block;
+  transition:all 0.15s;
+}
+.btn-contact:hover{background:var(--orange-dim);box-shadow:2px 2px 0 var(--cream);}
+.btn-contact-ghost{
+  font-family:var(--cond);font-size:0.95rem;font-weight:900;
+  letter-spacing:0.08em;padding:0.85rem 2rem;
+  border:2px solid #444;color:#aaa;
+  text-decoration:none;text-transform:uppercase;
+  display:inline-block;transition:all 0.15s;
+}
+.btn-contact-ghost:hover{border-color:#888;color:var(--cream);}
+
+/* ─── FOOTER ─── */
+footer{
+  background:var(--black);border-top:2px solid #222;
+  padding:2rem 5vw;display:flex;
+  justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;width:100%;box-sizing:border-box;
+}
+.footer-brand{
+  font-family:var(--cond);font-size:0.85rem;font-weight:700;
+  letter-spacing:0.06em;text-transform:uppercase;color:#555;
+}
+.footer-brand strong{color:var(--orange);}
+.footer-right{
+  font-family:var(--mono);font-size:0.68rem;color:#333;
+  letter-spacing:0.08em;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes lineSlide{0%{left:-100%;}50%{left:0;}100%{left:100%;}}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  nav{padding:0.8rem 1.5rem;}
+  .nav-links{display:none;}
+  .nav-right{gap:0.5rem;}
+  section{padding:4rem 1.2rem;}
+  #hero{padding:7rem 1.2rem 3.5rem;}
+  .scroll-hint{left:1.2rem;}
+  .about-grid{grid-template-columns:1fr;gap:2.5rem;}
+  .about-stats{grid-template-columns:1fr 1fr;}
+  .redes-grid{grid-template-columns:1fr 1fr;}
+  .paper-row{padding:1.5rem 1.2rem;}
+  .paper-actions{flex-direction:column;align-items:flex-start;gap:0.5rem;}
+  .blog-grid{grid-template-columns:1fr}
+  .newsletter-cta{flex-direction:column;padding:1.5rem 1.2rem;}
+  .depola-products{grid-template-columns:1fr 1fr;}
+  .medio-item{grid-template-columns:70px 1fr;gap:1rem;}
+  .medio-arrow{display:none;}
+  .medio-date-block strong{font-size:1.4rem;}
+  footer{flex-direction:column;text-align:center;padding:1.5rem 1.2rem;}
+}
+@media(max-width:480px){
+  .about-stats{grid-template-columns:1fr;}
+  .redes-grid{grid-template-columns:1fr;}
+  .depola-products{grid-template-columns:1fr;}
+  .hero-name{font-size:3.5rem;}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#hero" class="nav-logo">NMA <span>//</span> 2026</a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre mí</a></li>
+    <li><a href="#redes">Redes</a></li>
+    <li><a href="#investigacion">Investigación</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#depola">De Pola y Política</a></li>
+    <li><a href="#medios">Medios</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="index-en.html" class="lang-switch">EN</a>
+    <a href="#contacto" class="nav-cta">Contacto</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-collage-band"></div>
+  <div class="hero-collage-orange"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Comunicación política · Democracia · Divulgación científica</div>
+    <h1 class="hero-name"><em>Nicolás</em><br>Molina-Arroyave</h1>
+    <div class="hero-typewriter"><span id="typewriter-text"></span></div>
+    <div class="hero-tags">
+      <span class="tag orange">Investigador</span>
+      <span class="tag orange">Docente</span>
+      <span class="tag blue">EAFIT · UPB · UNAL</span>
+      <span class="tag teal">ICS-ULisboa</span>
+      <span class="tag">Medellín → Lisboa</span>
+    </div>
+    <div class="hero-actions">
+      <a href="#investigacion" class="btn-primary">Ver investigación →</a>
+      <a href="#blog" class="btn-ghost">Leer el blog</a>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div>Explorar</div>
+</section>
+
+<!-- ─── 01 SOBRE ─── -->
+<section id="sobre">
+  <div class="section-band">
+    <div class="section-num">01</div>
+    <div class="section-label-text">Perfil</div>
+  </div>
+  <h2 class="section-title">Docente, analista<br>e <em>investigador</em></h2>
+  <div class="divider-thick"></div>
+  <div class="about-grid reveal">
+    <div class="about-bio">
+      <p>Soy politólogo especializado en <strong>comunicación política, discurso populista y erosión democrática</strong> en América Latina. Trabajo en la intersección entre rigor académico y lenguaje accesible.</p>
+      <p>Imparto cátedra en <strong>EAFIT, UPB y UNAL Medellín</strong> en sistemas electorales, marketing político y métodos empíricos. Colaboro con el semillero <strong>CPOP</strong> de EAFIT y dirijo proyectos de análisis del ciclo electoral colombiano.</p>
+      <p>En 2026 inicio el Doctorado en Política Comparada en el <strong>ICS de la Universidade de Lisboa</strong>, con foco en discurso populista y democracia comparada.</p>
+      <div class="affil-list">
+        <div class="affil"><div class="affil-dot">▶</div>EAFIT — Escuela de Artes y Humanidades</div>
+        <div class="affil"><div class="affil-dot">▶</div>CPOP — Semillero ComPol y Opinión Pública</div>
+        <div class="affil"><div class="affil-dot">▶</div>ICS-ULisboa — Doctorado en Política Comparada</div>
+        <div class="affil"><div class="affil-dot">▶</div>Atlas Electoral Colombia (proyecto propio)</div>
+      </div>
+    </div>
+    <div>
+      <div class="about-stats">
+        <div class="stat-card"><div class="stat-num">3+</div><div class="stat-label">Universidades donde enseño</div></div>
+        <div class="stat-card"><div class="stat-num">ES·EN</div><div class="stat-label">Idiomas de trabajo</div></div>
+        <div class="stat-card"><div class="stat-num">2026</div><div class="stat-label">Inicio doctorado en Lisboa</div></div>
+        <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Artículos publicados en revistas indexadas</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 02 REDES ─── -->
+<section id="redes">
+  <div class="section-band">
+    <div class="section-num">02</div>
+    <div class="section-label-text">Redes académicas y profesionales</div>
+  </div>
+  <h2 class="section-title">Conéctate donde<br><em>produzco</em></h2>
+  <div class="divider-thick"></div>
+  <div class="redes-grid reveal">
+    <a href="https://scholar.google.com/citations?user=UsAURA0AAAAJ&hl=es" target="_blank" class="red-card">
+      <div class="red-icon">GS</div>
+      <div class="red-name">Google Scholar</div>
+      <div class="red-handle">Nicolás Molina-Arroyave</div>
+      <div class="red-desc">Perfil de publicaciones, citas e índice-h.</div>
+    </a>
+    <a href="https://orcid.org/0000-0001-7550-1940" target="_blank" class="red-card">
+      <div class="red-icon">ID</div>
+      <div class="red-name">ORCID</div>
+      <div class="red-handle">orcid.org/0000-0001-7550-1940</div>
+      <div class="red-desc">Identificador único de investigador. Vincula todas las afiliaciones y publicaciones.</div>
+    </a>
+    <a href="https://www.researchgate.net/profile/Nicolas-Molina-Arroyave-2?ev=hdr_xprf" target="_blank" class="red-card">
+      <div class="red-icon">RG</div>
+      <div class="red-name">ResearchGate</div>
+      <div class="red-handle">Nicolás Molina-Arroyave</div>
+      <div class="red-desc">Preprints y colaboración con la comunidad investigadora.</div>
+    </a>
+    <a href="https://www.linkedin.com/in/nicolas-molina-arroyave-084804176/" target="_blank" class="red-card">
+      <div class="red-icon">in</div>
+      <div class="red-name">LinkedIn</div>
+      <div class="red-handle">nmolina-arroyave</div>
+      <div class="red-desc">Red profesional: cursos, conferencias y asesoría.</div>
+    </a>
+    <a href="https://x.com/NM_DarthStark" target="_blank" class="red-card">
+      <div class="red-icon">𝕏</div>
+      <div class="red-name">X / Twitter</div>
+      <div class="red-handle">@NM_DarthStark</div>
+      <div class="red-desc">Análisis electoral en tiempo real y coyuntura política colombiana.</div>
+    </a>
+    <a href="https://bsky.app/profile/darthnickmolina.bsky.social" target="_blank" class="red-card">
+      <div class="red-icon">BSKY</div>
+      <div class="red-name">Bluesky</div>
+      <div class="red-handle">@darthnickmolina.bsky.social</div>
+      <div class="red-desc">Análisis y red de investigación en inglés.</div>
+    </a>
+    <a href="https://www.tiktok.com/@nico.molinaed" target="_blank" class="red-card">
+      <div class="red-icon">TT</div>
+      <div class="red-name">TikTok</div>
+      <div class="red-handle">@nico.molinaed</div>
+      <div class="red-desc">Divulgación más relajada.</div>
+    </a>
+  </div>
+</section>
+
+<!-- ─── 03 INVESTIGACIÓN ─── -->
+<section id="investigacion">
+  <div class="section-band">
+    <div class="section-num">03</div>
+    <div class="section-label-text">Investigación</div>
+  </div>
+  <h2 class="section-title">Lo que <em>escribo</em><br>y por qué importa</h2>
+  <div class="divider-thick"></div>
+  <div class="papers-list reveal">
+
+    <div class="paper-row">
+      <div class="paper-row-top">
+        <div>
+          <div class="paper-year-badge">2026 · Artículo publicado</div>
+          <div class="paper-row-title">Crowdsourcing platforms for democracy in Latin America</div>
+          <div class="paper-row-journal">Cuadernos.info — Núm. 64</div>
+          <div class="paper-row-coauthors">Con Restrepo Echavarría, Sepúlveda Cano y Villa Montoya</div>
+        </div>
+      </div>
+      <div class="paper-row-excerpt">¿Pueden las plataformas digitales de participación ciudadana fortalecer la democracia latinoamericana? Análisis comparado de mecanismos de crowdsourcing político en Colombia, Brasil y Chile.</div>
+      <div class="paper-actions">
+        <a href="paper-crowdsourcing.html" class="btn-caja">📦 Abrir la caja</a>
+        <a href="https://cuadernosinfo.uc.cl/index.php/cdi/article/view/98966" target="_blank" class="btn-paper">
+          <span class="paper-status-dot dot-live"></span>Acceder al paper
+        </a>
+      </div>
+    </div>
+
+    <div class="paper-row">
+      <div class="paper-row-top">
+        <div>
+          <div class="paper-year-badge">2024 · Artículo publicado</div>
+          <div class="paper-row-title">Del idealismo a la estrategia de comunicación política: La profesionalización de las campañas de izquierda en Colombia (2006–2022)</div>
+          <div class="paper-row-journal">Desafíos - Vol. 36 Núm. 2</div>
+          <div class="paper-row-coauthors">Con Restrepo Echavarría</div>
+        </div>
+      </div>
+      <div class="paper-row-excerpt">Análisis comparado de las cuatro campañas presidenciales de izquierda en segunda vuelta entre 2006 y 2022. Mide la evolución de la profesionalización organizacional y comunicativa con el Índice INPRO, y rastrea el giro hacia la consultoría externa y la comunicación digital que explica la victoria del Pacto Histórico en 2022.</div>
+      <div class="paper-actions">
+        <a href="paper-profizq.html" class="btn-caja">📦 Abrir la caja</a>
+        <a href="https://revistas.urosario.edu.co/index.php/desafios/article/view/14123" target="_blank" class="btn-paper">
+          <span class="paper-status-dot dot-live"></span>Acceder al paper
+        </a>
+      </div>
+    </div>
+
+    <div class="paper-row">
+      <div class="paper-row-top">
+        <div>
+          <div class="paper-year-badge">2024 · Artículo publicado</div>
+          <div class="paper-row-title">La participación y la generación de valor en medios independientes online en Colombia</div>
+          <div class="paper-row-journal">Historia y Comunicación Social - Vol. 29 Núm. 1</div>
+          <div class="paper-row-coauthors">Con Villa Montoya y Restrepo Echavarría</div>
+        </div>
+      </div>
+      <div class="paper-row-excerpt">La participación de las audiencias contribuye a la creación, captura y red de valor en medios digitales independientes colombianos. A partir de 17 entrevistas semiestructuradas con líderes de medios en Colombia y América Latina, identifica los espacios donde estos proyectos periodísticos habilitan dicha participación.</div>
+      <div class="paper-actions">
+        <a href="paper-ppacion.html" class="btn-caja">📦 Abrir la caja</a>
+        <a href="https://revistas.ucm.es/index.php/HICS/article/view/95828" target="_blank" class="btn-paper">
+          <span class="paper-status-dot dot-live"></span>Acceder al paper
+        </a>
+      </div>
+    </div>
+
+    <div class="paper-row">
+      <div class="paper-row-top">
+        <div>
+          <div class="paper-year-badge">2026 · Proyecto en curso</div>
+          <div class="paper-row-title">Atlas Electoral Colombia 2026</div>
+          <div class="paper-row-journal">Herramienta cívico-científica · Python + Leaflet.js</div>
+        </div>
+      </div>
+      <div class="paper-row-excerpt">Plataforma de visualización georreferenciada de resultados electorales colombianos. Datos scrapeados de la Registraduría Nacional conectados a un mapa interactivo por municipio, partido y candidato.</div>
+      <div class="paper-actions">
+        <a href="paper-atlas.html" class="btn-caja">📦 Abrir la caja</a>
+        <span class="btn-pronto"><span class="paper-status-dot dot-pending"></span>Paper · Muy pronto</span>
+        <a href="#" target="_blank" class="btn-material">↗ Ver herramienta</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── 04 BLOG ─── -->
+<section id="blog">
+  <div class="section-band">
+    <div class="section-num">04</div>
+    <div class="section-label-text">Blog y newsletter</div>
+  </div>
+  <h2 class="section-title">Ideas que <em>circulan</em><br>fuera del journal</h2>
+  <div class="divider-thick"></div>
+  <p class="blog-eyebrow">Publico semanalmente en Substack. Aquí encuentras adelantos — el contenido completo vive allá.</p>
+  <div class="blog-grid reveal">
+    <a href="https://open.substack.com/pub/nicomolina13/p/los-bullies-al-poder?r=4r4n1f&utm_campaign=post-expanded-share&utm_medium=post%20viewer" target="_blank" class="blog-card">
+      <div class="blog-type">Newsletter · Análisis</div>
+      <div class="blog-card-title">Los bullies al poder</div>
+      <div class="blog-excerpt">¿Cómo llegaron a gobernarnos los que golpean, humillan y putean?</div>
+      <div class="blog-date">08/07/2026</div>
+    </a>
+    <a href="https://substack.com/@nicomolina13/posts" target="_blank" class="blog-card">
+      <div class="blog-type">Reflexión · Pedagogía</div>
+      <div class="blog-card-title">Por qué enseño política como si fuera un juego de mesa</div>
+      <div class="blog-excerpt">Sobre WizardNet, el Risk colombiano y los simuladores electorales: cuando la gamificación es una apuesta epistemológica.</div>
+      <div class="blog-date">Próximamente en Substack</div>
+    </a>
+    <a href="https://substack.com/@nicomolina13/posts" target="_blank" class="blog-card">
+      <div class="blog-type">Investigación · Divulgación</div>
+      <div class="blog-card-title">¿Qué prometen los candidatos presidenciales y qué cumple el LDA?</div>
+      <div class="blog-excerpt">Aplicamos topic modeling a cuatro programas de gobierno del 2026. Esto es lo que encontramos.</div>
+      <div class="blog-date">Próximamente en Substack</div>
+    </a>
+    <a href="https://substack.com/@nicomolina13/posts" target="_blank" class="blog-card">
+      <div class="blog-type">Proyecto · Democracia digital</div>
+      <div class="blog-card-title">Atlas Electoral: la cocina de un proyecto cívico-científico</div>
+      <div class="blog-excerpt">Cómo hackeamos la API de la Registraduría y decidimos hacer el código abierto desde el primer día.</div>
+      <div class="blog-date">Próximamente en Substack</div>
+    </a>
+    <a href="https://substack.com/@nicomolina13/posts" target="_blank" class="blog-card">
+      <div class="blog-type">Opinión · Academia</div>
+      <div class="blog-card-title">Lisboa como apuesta: por qué un doctorado en política comparada desde Colombia</div>
+      <div class="blog-excerpt">Una nota personal sobre cómo se construye un perfil académico en el sur global.</div>
+      <div class="blog-date">Próximamente en Substack</div>
+    </a>
+    <a href="https://substack.com/@nicomolina13/posts" target="_blank" class="blog-card">
+      <div class="blog-type">Método · Herramientas</div>
+      <div class="blog-card-title">Orange Data Mining para politólogos: una guía práctica sin código</div>
+      <div class="blog-excerpt">Todo lo que quisiera que me hubieran explicado sobre LDA y visualización de textos al principio.</div>
+      <div class="blog-date">Próximamente en Substack</div>
+    </a>
+  </div>
+  <div class="newsletter-cta reveal">
+    <p class="newsletter-cta-text">"La política es demasiado importante para dejarla solo en los journals."</p>
+    <a href="https://substack.com/@nicomolina13/posts" target="_blank" class="btn-primary">Suscribirme en Substack →</a>
+  </div>
+</section>
+
+<!-- ─── 05 DE POLA Y POLÍTICA ─── -->
+<section id="depola">
+  <div class="section-band">
+    <div class="section-num" style="color:var(--black);background:var(--orange);border-right-color:var(--black);">05</div>
+    <div class="section-label-text" style="background:var(--orange);color:var(--black);">De Pola y Política</div>
+  </div>
+  <div class="depola-badge">🍺 Brindis Rebelde — Masterclasses de ComPol</div>
+  <h2 class="section-title" style="color:var(--cream);">Aprende política<br>con <em>cerveza en mano</em></h2>
+  <div class="divider-thick"></div>
+  <p class="depola-lead reveal">Masterclasses de comunicación política y democracia en formato relajado, directo y sin mamposería. Elige tu modalidad de acceso.</p>
+  <div class="depola-products reveal">
+    <div class="depola-product">
+      <span class="depola-product-emoji">🍺</span>
+      <div class="depola-product-name">Una Pola</div>
+      <div class="depola-product-price">$50.000 COP</div>
+    </div>
+    <div class="depola-product">
+      <span class="depola-product-emoji">🍻</span>
+      <div class="depola-product-name">Pola pa' 3</div>
+      <div class="depola-product-price">$130.000 COP</div>
+    </div>
+    <div class="depola-product">
+      <span class="depola-product-emoji">📦</span>
+      <div class="depola-product-name">Six-Pack</div>
+      <div class="depola-product-price">$220.000 COP</div>
+    </div>
+    <div class="depola-product">
+      <span class="depola-product-emoji">🛢️</span>
+      <div class="depola-product-name">De Barril</div>
+      <div class="depola-product-price" style="color:#7BB8B8;">Próximamente</div>
+    </div>
+    <div class="depola-product" style="border-color:var(--orange);background:rgba(232,98,26,0.15);">
+      <span class="depola-product-emoji">🏆</span>
+      <div class="depola-product-name">Maestro Cervecero</div>
+      <div class="depola-product-price">$400.000 COP</div>
+    </div>
+  </div>
+  <div class="depola-actions reveal">
+    <a href="de-pola-y-politica.html" class="btn-depola">Ver precios y detalles →</a>
+    <a href="https://forms.gle/LHUEghVh1B2DAg1m9" target="_blank" class="btn-depola-ghost">Inscribirme ahora ↗</a>
+  </div>
+</section>
+
+<!-- ─── 06 MEDIOS ─── -->
+<section id="medios">
+  <div class="section-band">
+    <div class="section-num">06</div>
+    <div class="section-label-text">Apariciones en medios</div>
+  </div>
+  <h2 class="section-title">Cuando la<br><em>academia sale</em> al aire</h2>
+  <div class="divider-thick"></div>
+  <div class="medios-list reveal">
+    <a href="https://www.youtube.com/watch?v=pzpqOqzkk6Y&list=PLDQeXR1NXxiSaUkS_Q6Tdj5Sfq0yJmN_r&index=9" class="medio-item">
+      <div class="medio-date-block"><strong>JUN</strong>2026</div>
+      <div class="medio-info">
+        <div class="medio-outlet">TeleAntioquia</div>
+        <div class="medio-title-text">Análisis de segunda vuelta presidencial Colombia 2026: De La Espriella vs. Cepeda</div>
+        <div class="medio-format">Panelista invitado</div>
+      </div>
+      <div class="medio-arrow">↗</div>
+    </a>
+    <a href="https://www.miamiherald.com/news/nation-world/world/americas/article315968486.html" class="medio-item">
+      <div class="medio-date-block"><strong>JUN</strong>2026</div>
+      <div class="medio-info">
+        <div class="medio-outlet">Miami Herald & El Nuevo Herald</div>
+        <div class="medio-title-text">Pro-Trump candidate, Petro ally gear up for Colombia run-off as tensions rise</div>
+        <div class="medio-format">Experto entrevistado</div>
+      </div>
+      <div class="medio-arrow">↗</div>
+    </a>
+    <a href="https://www.youtube.com/watch?v=uJ5pXfL49do&list=PLDQeXR1NXxiSaUkS_Q6Tdj5Sfq0yJmN_r&index=8" class="medio-item">
+      <div class="medio-date-block"><strong>MAY</strong>2026</div>
+      <div class="medio-info">
+        <div class="medio-outlet">TeleAntioquia</div>
+        <div class="medio-title-text">Análisis de primera vuelta presidencial Colombia 2026</div>
+        <div class="medio-format">Panelista invitado</div>
+      </div>
+      <div class="medio-arrow">↗</div>
+    </a>
+    <a href="https://www.youtube.com/watch?v=PeGd0WVWleQ&list=PLDQeXR1NXxiSaUkS_Q6Tdj5Sfq0yJmN_r&index=7" class="medio-item">
+      <div class="medio-date-block"><strong>MAY</strong>2026</div>
+      <div class="medio-info">
+        <div class="medio-outlet">TeleMedellín</div>
+        <div class="medio-title-text">Videos con inteligencia artificial generan controversia y debate en campaña política</div>
+        <div class="medio-format">Experto entrevistado</div>
+      </div>
+      <div class="medio-arrow">↗</div>
+    </a>
+    <a href="https://www.elcolombiano.com/especiales/elecciones-2026/abelardo-de-la-espriella-paloma-valencia-guerra-sucia-elecciones-2026-JO36383390" class="medio-item">
+      <div class="medio-date-block"><strong>MAY</strong>2026</div>
+      <div class="medio-info">
+        <div class="medio-outlet">El Colombiano</div>
+        <div class="medio-title-text">¿"Guerra sucia" a favor de Abelardo de la Espriella? Así funciona la narrativa en redes</div>
+        <div class="medio-format">Experto entrevistado</div>
+      </div>
+      <div class="medio-arrow">↗</div>
+    </a>
+    <a href="https://www.youtube.com/watch?v=t6WaowypOC0&list=PLDQeXR1NXxiSaUkS_Q6Tdj5Sfq0yJmN_r&index=6" class="medio-item">
+      <div class="medio-date-block"><strong>MAR</strong>2026</div>
+      <div class="medio-info">
+        <div class="medio-outlet">TeleAntioquia</div>
+        <div class="medio-title-text">Análisis de elecciones legislativas y consultas interpartidistas Colombia 2026</div>
+        <div class="medio-format">Panelista invitado</div>
+      </div>
+      <div class="medio-arrow">↗</div>
+    </a>
+    <a href="https://www.youtube.com/watch?v=pjHegfHOyVo" class="medio-item">
+      <div class="medio-date-block"><strong>MAR</strong>2026</div>
+      <div class="medio-info">
+        <div class="medio-outlet">TeleAntioquia</div>
+        <div class="medio-title-text">En Consejo de Redacción: Sobre jurados y testigos electorales</div>
+        <div class="medio-format">Panelista invitado</div>
+      </div>
+      <div class="medio-arrow">↗</div>
+    </a>
+    <a href="https://www.elcolombiano.com/colombia/resultados-consejos-de-juventud-2025-GB30138248" class="medio-item">
+      <div class="medio-date-block"><strong>OCT</strong>2025</div>
+      <div class="medio-info">
+        <div class="medio-outlet">El Colombiano</div>
+        <div class="medio-title-text">La abstención sigue marcando en las elecciones de los Consejos de Juventud</div>
+        <div class="medio-format">Experto entrevistado</div>
+      </div>
+      <div class="medio-arrow">↗</div>
+    </a>
+  </div>
+</section>
+
+<!-- ─── 07 CONTACTO ─── -->
+<section id="contacto">
+  <div class="contact-inner reveal">
+    <div class="section-band" style="margin-bottom:1.5rem;">
+      <div class="section-num">07</div>
+      <div class="section-label-text">Contacto</div>
+    </div>
+    <h2 class="contact-title">¿Hablamos de<br><em>política</em>?</h2>
+    <p class="contact-sub">Disponible para conferencias, cursos corporativos, asesoría de campañas y colaboraciones de investigación. Trabajo en español, inglés, francés y (pronto) portugués.</p>
+    <div class="contact-links">
+      <a href="mailto:nmolina@eafit.edu.co" class="btn-contact">Escribir correo →</a>
+      <a href="https://www.linkedin.com/in/nicolas-molina-arroyave-084804176/" target="_blank" class="btn-contact-ghost">LinkedIn</a>
+      <a href="https://x.com/NM_DarthStark" target="_blank" class="btn-contact-ghost">X / Twitter</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand"><strong>Nicolás Molina-Arroyave</strong> — Comunicación política y democracia<br>Medellín, Colombia → Lisboa, Portugal</div>
+  <div class="footer-right">© 2026</div>
+</footer>
+
+<script>
+  const phrases=["para entender la política.","donde la ciencia habla claro.","entre los datos y la democracia.","comunicando lo que el poder hace."];
+  let pi=0,ci=0,deleting=false;
+  const tw=document.getElementById('typewriter-text');
+  function type(){const phrase=phrases[pi];if(!deleting){tw.textContent=phrase.slice(0,ci+1);ci++;if(ci===phrase.length){deleting=true;setTimeout(type,2000);return;}}else{tw.textContent=phrase.slice(0,ci-1);ci--;if(ci===0){deleting=false;pi=(pi+1)%phrases.length;}}setTimeout(type,deleting?45:75);}
+  setTimeout(type,1800);
+  const navEl=document.getElementById('nav');
+  window.addEventListener('scroll',()=>{navEl.classList.toggle('scrolled',window.scrollY>50);});
+  const reveals=document.querySelectorAll('.reveal');
+  const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+  reveals.forEach(r=>observer.observe(r));
+</script>
+</body>
+</html>
